@@ -10,6 +10,21 @@ permissions:
   contents: read
 
 jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.18.0
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - run: npm run test:browser-retained
+      - run: npm run typecheck:browser
   native:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -54,12 +69,15 @@ jobs:
         run: |
           cargo fetch --locked
           cargo fetch --manifest-path castalia-filesystem-wasm/Cargo.toml --locked
+      - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify source and build immutable candidate
         id: candidate
         run: |
           node scripts/verify-extraction.mjs
           node scripts/build-package.mjs --out-dir "$RUNNER_TEMP/filesystem-candidate"
           echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Test adapter against the complete actual WASM candidate
+        run: FILESYSTEM_WASM_PACKAGE="$RUNNER_TEMP/filesystem-candidate" node --test packages/browser/tests/runtime-wasm.test.mjs
       - name: Upload candidate bytes without publication
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

@@ -43,7 +43,7 @@
     {
       "sourcePath": "apps/web/src/files/filesystem-worker.ts",
       "sourceSha256": "1182e28a9239863029698b72cc915b0780909c9eba7afcbff8f7092561a9956e",
-      "destination": "packages/browser/src/filesystem-worker.mjs"
+      "destination": "packages/browser/src/runtime.mjs"
     },
     {
       "sourcePath": "apps/web/src/files/filesystem-client.ts",

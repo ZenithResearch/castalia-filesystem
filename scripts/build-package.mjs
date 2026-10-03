@@ -1,8 +1,20 @@
-import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, cp } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { command, lockedMetadata, RUST_TOOLCHAIN, NODE_VERSION } from "./lib/process.mjs";
-import { digest, inventory, verifyPackage, MANIFEST, SCHEMA, REPOSITORY } from "./lib/package-manifest.mjs";
+import {
+  command,
+  lockedMetadata,
+  RUST_TOOLCHAIN,
+  NODE_VERSION,
+} from "./lib/process.mjs";
+import {
+  digest,
+  inventory,
+  verifyPackage,
+  MANIFEST,
+  SCHEMA,
+  REPOSITORY,
+} from "./lib/package-manifest.mjs";
 import { stripWasmNameSection } from "./lib/strip-wasm-name.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -11,17 +23,23 @@ let output;
 let development = false;
 while (args.length) {
   const arg = args.shift();
-  if (arg === "--out-dir" && args.length && !output) output = resolve(args.shift());
+  if (arg === "--out-dir" && args.length && !output)
+    output = resolve(args.shift());
   else if (arg === "--development" && !development) development = true;
   else throw new Error(`unknown or incomplete argument: ${arg}`);
 }
-if (!output) throw new Error("usage: build-package.mjs --out-dir NEW_DIRECTORY [--development]");
-if (process.versions.node !== NODE_VERSION) throw new Error(`Node ${NODE_VERSION} is required`);
+if (!output)
+  throw new Error(
+    "usage: build-package.mjs --out-dir NEW_DIRECTORY [--development]",
+  );
+if (process.versions.node !== NODE_VERSION)
+  throw new Error(`Node ${NODE_VERSION} is required`);
 const git = (...values) => command("git", ["-C", root, ...values]);
 const revision = git("rev-parse", "HEAD");
 const status = () => git("status", "--porcelain", "--untracked-files=all");
 const initialStatus = status();
-if (initialStatus && !development) throw new Error("candidate source must be clean and committed");
+if (initialStatus && !development)
+  throw new Error("candidate source must be clean and committed");
 const env = {
   ...process.env,
   RUSTUP_TOOLCHAIN: RUST_TOOLCHAIN,
@@ -39,17 +57,29 @@ const tools = {
   wasmPack: command("wasm-pack", ["--version"], options),
   wasmBindgen: command("wasm-bindgen", ["--version"], options),
 };
-if (tools.wasmPack !== "wasm-pack 0.14.0" || tools.wasmBindgen !== "wasm-bindgen 0.2.127") {
+if (
+  tools.wasmPack !== "wasm-pack 0.14.0" ||
+  tools.wasmBindgen !== "wasm-bindgen 0.2.127"
+) {
   throw new Error("pinned wasm-pack and wasm-bindgen tools are required");
 }
 const locks = {};
-for (const path of ["Cargo.lock", "castalia-filesystem-wasm/Cargo.lock"]) {
+for (const path of [
+  "Cargo.lock",
+  "castalia-filesystem-wasm/Cargo.lock",
+  "package-lock.json",
+]) {
   locks[path] = digest(await readFile(join(root, path)));
 }
 for (const manifest of ["Cargo.toml", "castalia-filesystem-wasm/Cargo.toml"]) {
   const metadata = lockedMetadata(join(root, manifest), options);
   for (const item of metadata.packages) {
-    if (item.source === null && !["castalia-filesystem-core", "castalia-filesystem-wasm"].includes(item.name)) {
+    if (
+      item.source === null &&
+      !["castalia-filesystem-core", "castalia-filesystem-wasm"].includes(
+        item.name,
+      )
+    ) {
       throw new Error(`unexpected local dependency: ${item.name}`);
     }
     if (item.source !== null && !item.source.startsWith("registry+")) {
@@ -58,10 +88,29 @@ for (const manifest of ["Cargo.toml", "castalia-filesystem-wasm/Cargo.toml"]) {
   }
 }
 await mkdir(output); // Never overwrite a prior candidate or its acceptance evidence.
-for (const [target, folder] of [["web", "web"], ["nodejs", "node"]]) {
-  command("wasm-pack", ["build", join(root, "castalia-filesystem-wasm"),
-    "--target", target, "--release", "--mode", "no-install", "--no-opt",
-    "--out-dir", join(output, folder), "--", "--locked", "--offline"], options);
+for (const [target, folder] of [
+  ["web", "web"],
+  ["nodejs", "node"],
+]) {
+  command(
+    "wasm-pack",
+    [
+      "build",
+      join(root, "castalia-filesystem-wasm"),
+      "--target",
+      target,
+      "--release",
+      "--mode",
+      "no-install",
+      "--no-opt",
+      "--out-dir",
+      join(output, folder),
+      "--",
+      "--locked",
+      "--offline",
+    ],
+    options,
+  );
   const wasm = join(output, folder, "castalia_filesystem_wasm_bg.wasm");
   await writeFile(wasm, stripWasmNameSection(await readFile(wasm)));
   const packagePath = join(output, folder, "package.json");
@@ -70,18 +119,56 @@ for (const [target, folder] of [["web", "web"], ["nodejs", "node"]]) {
   metadata.castaliaSourceRevision = revision;
   await writeFile(packagePath, `${JSON.stringify(metadata, null, 2)}\n`);
 }
-console.log(command(process.execPath, [join(root, "castalia-filesystem-wasm/tests/parity.mjs"), join(output, "node")], options));
+console.log(
+  command(
+    process.execPath,
+    [
+      join(root, "castalia-filesystem-wasm/tests/parity.mjs"),
+      join(output, "node"),
+    ],
+    options,
+  ),
+);
 await copyFile(join(root, "LICENSE"), join(output, "LICENSE"));
-await copyFile(join(root, "docs/SNAPSHOT-V1.md"), join(output, "SNAPSHOT-V1.md"));
+await copyFile(
+  join(root, "docs/SNAPSHOT-V1.md"),
+  join(output, "SNAPSHOT-V1.md"),
+);
+// Include runtime source, declarations, dependency lock and exact license/provenance inventory.
+for (const path of [
+  "package.json",
+  "package-lock.json",
+  "README.md",
+  "provenance/browser-extraction.json",
+  "provenance/browser-retained-tests.json",
+  "docs/IDENTITY-MAPPING.md",
+  "docs/BROWSER-REGISTRATION-V1.md",
+  "docs/BROWSER-ADAPTER.md",
+  "licenses/zip-js-BSD-3-Clause.txt",
+]) {
+  await mkdir(dirname(join(output, path)), { recursive: true });
+  await copyFile(join(root, path), join(output, path));
+}
+await cp(
+  join(root, "packages/browser/src"),
+  join(output, "packages/browser/src"),
+  { recursive: true, dereference: false },
+);
 for (const [path, expected] of Object.entries(locks)) {
-  if (digest(await readFile(join(root, path))) !== expected) throw new Error(`lock changed during build: ${path}`);
+  if (digest(await readFile(join(root, path))) !== expected)
+    throw new Error(`lock changed during build: ${path}`);
 }
 if (git("rev-parse", "HEAD") !== revision || status() !== initialStatus) {
   throw new Error("source changed during build");
 }
 const manifest = {
   schema: SCHEMA,
-  source: { repository: REPOSITORY, revision, dirty: Boolean(initialStatus), mode: development ? "development" : "candidate" },
+  source: {
+    repository: REPOSITORY,
+    revision,
+    dirty: Boolean(initialStatus),
+    mode: development ? "development" : "candidate",
+  },
   tools,
   locks,
   normalization: "remove-only-wasm-name-section",
@@ -91,4 +178,11 @@ const bytes = `${JSON.stringify(manifest, null, 2)}\n`;
 await writeFile(join(output, MANIFEST), bytes);
 const sha256 = digest(bytes);
 await verifyPackage(output, sha256, revision, { development });
-console.log(JSON.stringify({ directory: output, sourceRevision: revision, manifestSha256: sha256, files: manifest.files.length }));
+console.log(
+  JSON.stringify({
+    directory: output,
+    sourceRevision: revision,
+    manifestSha256: sha256,
+    files: manifest.files.length,
+  }),
+);

@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "24.18.0"
+    "node": ">=20.20.0"
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs packages/browser/tests/*.test.mjs",
     "verify:extraction": "node scripts/verify-extraction.mjs",
-    "build:package": "node scripts/build-package.mjs"
+    "build:package": "node scripts/build-package.mjs",
+    "test:browser-retained": "vitest run --config packages/browser/vitest.config.mjs",
+    "typecheck:browser": "tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM packages/browser/src/index.d.mts packages/browser/src/worker.d.mts"
   },
   "license": "AGPL-3.0-or-later",
   "packageManager": "npm@11.16.0",
@@ -17,12 +19,40 @@
     "./registration": {
       "types": "./packages/browser/src/registration.d.mts",
       "default": "./packages/browser/src/registration.mjs"
+    },
+    "./browser": {
+      "types": "./packages/browser/src/index.d.mts",
+      "default": "./packages/browser/src/index.mjs"
+    },
+    "./worker": {
+      "types": "./packages/browser/src/worker.d.mts",
+      "default": "./packages/browser/src/worker.mjs"
+    },
+    "./registration-store": {
+      "types": "./packages/browser/src/registration-store.d.mts",
+      "default": "./packages/browser/src/registration-store.mjs"
+    },
+    "./database": {
+      "types": "./packages/browser/src/database.d.mts",
+      "default": "./packages/browser/src/database.mjs"
     }
   },
   "dependencies": {
     "@zip.js/zip.js": "2.18.2"
   },
   "devDependencies": {
-    "fake-indexeddb": "6.2.5"
-  }
+    "fake-indexeddb": "6.2.5",
+    "vitest": "4.1.11",
+    "typescript": "5.9.3"
+  },
+  "files": [
+    "packages/browser/src",
+    "docs/IDENTITY-MAPPING.md",
+    "docs/BROWSER-REGISTRATION-V1.md",
+    "docs/BROWSER-ADAPTER.md",
+    "provenance/browser-extraction.json",
+    "README.md",
+    "LICENSE",
+    "licenses"
+  ]
 }

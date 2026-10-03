@@ -1,0 +1,31 @@
+{
+  "sourceRepository": "https://github.com/ZenithResearch/castalia-web",
+  "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+  "files": [
+    {
+      "sourcePath": "apps/web/tests/import-zip.test.ts",
+      "sourceSha256": "7e1a41dc6c805b28395d2eb680bf1d264770bad4687bb99d42bf16c823a5b010",
+      "destination": "packages/browser/retained-tests/import-zip.test.mjs"
+    },
+    {
+      "sourcePath": "apps/web/tests/opfs-object-reader.test.ts",
+      "sourceSha256": "06137c59b1acfc3f1f5556be54ac7ae30ee6dda0076d2aef4590b854b17020bf",
+      "destination": "packages/browser/retained-tests/opfs-object-reader.test.mjs"
+    },
+    {
+      "sourcePath": "apps/web/tests/files-reclaim.test.ts",
+      "sourceSha256": "fd0768d8e1332347b4f7238e46689e29a429de481db99bc2f96e66305c0328ad",
+      "destination": "packages/browser/retained-tests/files-reclaim.test.mjs"
+    },
+    {
+      "sourcePath": "apps/web/tests/bounded-zip-output.test.ts",
+      "sourceSha256": "e605efd794eb6cf43819b3c8ad82c11f909c7c2d17538741d7cced312bab9bcf",
+      "destination": "packages/browser/retained-tests/bounded-zip-output.test.mjs"
+    },
+    {
+      "sourcePath": "apps/web/tests/files-catalog.test.ts",
+      "sourceSha256": "c65a0e064191fbf19928283ef660eba4f6687b155de8439c8ad387c5fb16785e",
+      "destination": "packages/browser/retained-tests/files-catalog.test.mjs"
+    }
+  ]
+}
