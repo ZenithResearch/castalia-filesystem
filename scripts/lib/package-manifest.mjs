@@ -133,7 +133,7 @@ export async function verifyPackage(
   ]);
   if (
     !Object.values(manifest.locks).every((value) => SHA256.test(value)) ||
-    manifest.normalization !== "remove-only-wasm-name-section"
+    manifest.normalization !== "canonical-build-paths-and-remove-only-wasm-name-section"
   ) {
     throw new Error("invalid package provenance");
   }

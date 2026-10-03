@@ -1,0 +1,4 @@
+import {readdir,readFile} from 'node:fs/promises';import {join} from 'node:path';import {digest,verifyPackage,MANIFEST} from './lib/package-manifest.mjs';
+const [directory,revision]=process.argv.slice(2);if(!directory||!revision)throw new Error('artifact directory and source revision required');
+const candidates=(await readdir(directory,{withFileTypes:true})).filter(entry=>entry.isDirectory()).map(entry=>join(directory,entry.name));if(candidates.length!==2)throw new Error('exactly two independent hosted candidates required');
+let expected;for(const candidate of candidates){const sha=digest(await readFile(join(candidate,MANIFEST)));await verifyPackage(candidate,sha,revision);if(expected&&sha!==expected)throw new Error(`hosted candidate mismatch: ${expected} != ${sha}`);expected=sha;}console.log(`Both hosted candidates match exactly: ${expected}`);

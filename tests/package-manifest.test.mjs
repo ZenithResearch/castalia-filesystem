@@ -86,7 +86,7 @@ async function fixture(t, patch = {}) {
       "castalia-filesystem-wasm/Cargo.lock": "c".repeat(64),
       "package-lock.json": digest(dependencyLock),
     },
-    normalization: "remove-only-wasm-name-section",
+    normalization: "canonical-build-paths-and-remove-only-wasm-name-section",
     files: await inventory(directory),
     ...patch,
   };
