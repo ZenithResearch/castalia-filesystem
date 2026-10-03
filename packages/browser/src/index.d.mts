@@ -41,6 +41,19 @@ export interface FilesystemClient {
     file: File,
     onProgress?: (progress: FilesystemProgress) => void,
   ): Promise<WorkspaceCatalog>;
+  createShipment(
+    root: string,
+    path: string | undefined,
+    operationId: string,
+  ): Promise<Blob>;
+  releaseShipment(operationId: string): Promise<void>;
+  verifyShipment(
+    blob: Blob,
+  ): Promise<{ root: string; path: string | null; kind: "file" | "workspace" }>;
+  restoreShipment(
+    expectedHead: string | null,
+    blob: Blob,
+  ): Promise<WorkspaceCatalog>;
   reclaim(): Promise<{ objects: number; bytes: number }>;
   cancelImport(): void;
   list(root: string, path: string): Promise<DirectoryEntry[]>;

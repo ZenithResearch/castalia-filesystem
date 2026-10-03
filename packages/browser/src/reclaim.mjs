@@ -46,11 +46,22 @@ export async function reclaimUnusedObjects(
   loadCatalog,
   reachable,
   limits = RECLAIM_LIMITS,
+  loadPinnedRoots = async () => [],
 ) {
   const catalog = await loadCatalog();
+  const pinnedRoots = await loadPinnedRoots();
+  if (
+    !Array.isArray(pinnedRoots) ||
+    pinnedRoots.some((id) => typeof id !== "string" || !ID.test(id))
+  )
+    throw new ReclaimError("reclaim-unsafe");
   const retained = new Set();
-  for (const revision of catalog?.revisions ?? []) {
-    const ids = JSON.parse(await reachable(revision.root));
+  const roots = new Set([
+    ...(catalog?.revisions ?? []).map((revision) => revision.root),
+    ...pinnedRoots,
+  ]);
+  for (const revisionRoot of roots) {
+    const ids = JSON.parse(await reachable(revisionRoot));
     if (
       !Array.isArray(ids) ||
       ids.length > limits.retainedIds ||
@@ -104,6 +115,8 @@ export async function reclaimUnusedObjects(
     }
   }
   if (JSON.stringify(await loadCatalog()) !== JSON.stringify(catalog))
+    throw new CatalogError("conflict");
+  if (JSON.stringify(await loadPinnedRoots()) !== JSON.stringify(pinnedRoots))
     throw new CatalogError("conflict");
   // No deletion occurs until every root, storage entry and catalog recheck passed.
   let removed = 0;

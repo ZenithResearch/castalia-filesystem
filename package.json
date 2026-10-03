@@ -11,7 +11,7 @@
     "verify:extraction": "node scripts/verify-extraction.mjs",
     "build:package": "node scripts/build-package.mjs",
     "test:browser-retained": "vitest run --config packages/browser/vitest.config.mjs",
-    "typecheck:browser": "tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM packages/browser/src/index.d.mts packages/browser/src/worker.d.mts"
+    "typecheck:browser": "tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022,DOM packages/browser/src/index.d.mts packages/browser/src/worker.d.mts packages/browser/src/shipping.d.mts"
   },
   "license": "AGPL-3.0-or-later",
   "packageManager": "npm@11.16.0",
@@ -35,6 +35,14 @@
     "./database": {
       "types": "./packages/browser/src/database.d.mts",
       "default": "./packages/browser/src/database.mjs"
+    },
+    "./shipping": {
+      "types": "./packages/browser/src/shipping.d.mts",
+      "import": "./packages/browser/src/shipping.mjs"
+    },
+    "./shipping-worker": {
+      "types": "./packages/browser/src/shipping-worker.d.mts",
+      "import": "./packages/browser/src/shipping-worker.mjs"
     }
   },
   "dependencies": {

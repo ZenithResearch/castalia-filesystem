@@ -83,7 +83,7 @@ export declare function parseFilesKeyBinding(value: unknown): FilesKeyBindingV1;
 export declare function parseFilesKeyEnvelope(value: unknown): FilesKeyEnvelopeV1;
 export declare function filesWebOrigin(value: unknown): string;
 export declare function filesAudience(kind: 'index' | 'gateway', serviceId: string): string;
-export declare function parseFilesBody(operation: FilesOperationV1, value: unknown): FilesWrapBodyV1 | FilesUnwrapBodyV1 | FilesServiceAuthBodyV1;
+export declare function parseFilesBody(operation: unknown, value: unknown): FilesWrapBodyV1 | FilesUnwrapBodyV1 | FilesServiceAuthBodyV1;
 export declare function filesRequestDigest(operation: FilesOperationV1, body: unknown): Promise<string>;
 export declare function buildFilesConsent(operation: FilesOperationV1, body: unknown, origin: string, options?: {
     nowMs?: number;

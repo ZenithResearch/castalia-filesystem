@@ -1,8 +1,11 @@
 export const FILES_KEY_PROTOCOL = 'castalia.files-key-wrap.v1';
 function invalid() { throw new Error('Invalid Files custody request'); }
 function exact(value, keys) {
-    if (!value || typeof value !== 'object' || Array.isArray(value) || ![Object.prototype, null].includes(Object.getPrototypeOf(value))
+    if (!value || typeof value !== 'object' || Array.isArray(value)
         || Object.keys(value).length !== keys.length || keys.some(key => !Object.hasOwn(value, key)))
+        invalid();
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null)
         invalid();
 }
 function hex(value) { if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value))
@@ -79,7 +82,7 @@ function challenge(value, kind, serviceId) {
 export function parseFilesBody(operation, value) {
     if (operation === 'wrap') {
         exact(value, ['binding', 'key']);
-        filesDecodeKey(value.key);
+        filesDecodeKey(value.key).fill(0);
         return Object.freeze({ binding: parseFilesKeyBinding(value.binding), key: value.key });
     }
     if (operation === 'unwrap') {

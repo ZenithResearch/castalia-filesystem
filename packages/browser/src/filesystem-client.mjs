@@ -62,7 +62,8 @@ export function createFilesystemClient(worker, binding) {
     if (
       request.operation === "import" ||
       request.operation === "recover" ||
-      request.operation === "recover-invalid"
+      request.operation === "recover-invalid" ||
+      request.operation === "restore-shipment"
     )
       activeImportId = id;
     const promise = new Promise((resolve, reject) => {
@@ -100,6 +101,13 @@ export function createFilesystemClient(worker, binding) {
       send({ operation: "recover", expectedHead, file }, onProgress),
     recoverInvalid: (file, onProgress) =>
       send({ operation: "recover-invalid", file }, onProgress),
+    createShipment: (root, path, operationId) =>
+      send({ operation: "create-shipment", root, path, operationId }),
+    releaseShipment: (operationId) =>
+      send({ operation: "release-shipment", operationId }),
+    verifyShipment: (blob) => send({ operation: "verify-shipment", blob }),
+    restoreShipment: (expectedHead, blob) =>
+      send({ operation: "restore-shipment", expectedHead, blob }),
     reclaim: () => send({ operation: "reclaim" }),
     cancelImport() {
       if (activeImportId !== null)

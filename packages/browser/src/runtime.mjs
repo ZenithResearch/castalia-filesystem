@@ -1,5 +1,12 @@
 // Derived from Castalia Web; source license unresolved. See provenance/browser-extraction.json.
 /// <reference lib="webworker" />
+import { ShippingError, hexId } from "./shipping-contract.mjs";
+import { createShippingStore } from "./shipping-store.mjs";
+import {
+  captureShipment,
+  verifyShipmentArchive,
+  restoreShipmentArchive,
+} from "./shipping-archive.mjs";
 import { RegistrationError } from "./address.mjs";
 import { ZipWriter } from "@zip.js/zip.js/lib/zip-core-native.js";
 import { createBoundedZipOutput } from "./bounded-zip-output.mjs";
@@ -46,6 +53,7 @@ export function createFilesystemRuntime({
     content_id,
   } = wasm;
   const catalog = createCatalog(bound, { indexedDB });
+  const shippingStore = createShippingStore(indexedDB);
   const loadWorkspaceCatalog = catalog.load,
     commitWorkspaceRoot = catalog.commitRoot,
     commitRecoveredCatalog = catalog.recoverInvalid;
@@ -106,12 +114,17 @@ export function createFilesystemRuntime({
       }
     });
     try {
-      return await reclaimUnusedObjects(fs.root, loadWorkspaceCatalog, (root) =>
-        reader.reachable_ids_bounded(
-          root,
-          RECLAIM_LIMITS.retainedIds,
-          BigInt(RECLAIM_LIMITS.bytesRead),
-        ),
+      return await reclaimUnusedObjects(
+        fs.root,
+        loadWorkspaceCatalog,
+        (root) =>
+          reader.reachable_ids_bounded(
+            root,
+            RECLAIM_LIMITS.retainedIds,
+            BigInt(RECLAIM_LIMITS.bytesRead),
+          ),
+        RECLAIM_LIMITS,
+        () => shippingStore.pinnedRoots(bound),
       );
     } catch (error) {
       // Rust intentionally maps unknown provider errors; retain this local budget reason.
@@ -330,6 +343,61 @@ export function createFilesystemRuntime({
             revision.free();
           }
         });
+      case "create-shipment":
+        return withMutationLock(async () => {
+          hexId(request.operationId);
+          const current = await loadWorkspaceCatalog();
+          if (!current?.revisions.some((item) => item.root === request.root))
+            throw new CatalogError("conflict");
+          await shippingStore.pin(bound, request.operationId, request.root);
+          try {
+            const blob = await captureShipment(
+              fs,
+              wasm,
+              request.root,
+              request.path,
+            );
+            if (disposed || signal?.aborted)
+              throw new ShippingError("cancelled");
+            return blob;
+          } catch (error) {
+            await shippingStore.release(bound, request.operationId);
+            throw error;
+          }
+        });
+      case "release-shipment":
+        return withMutationLock(() =>
+          shippingStore.release(bound, request.operationId),
+        );
+      case "verify-shipment": {
+        const { header } = await verifyShipmentArchive(request.blob, wasm);
+        if (disposed || signal?.aborted) throw new ShippingError("cancelled");
+        return {
+          root: header.sourceRoot,
+          path: header.sourcePath,
+          kind: header.kind,
+        };
+      }
+      case "restore-shipment":
+        return withMutationLock(async () => {
+          const current = await loadWorkspaceCatalog();
+          if ((current?.head ?? null) !== request.expectedHead)
+            throw new CatalogError("conflict");
+          const root = await restoreShipmentArchive(
+            request.blob,
+            wasm,
+            fs,
+            bound,
+            now(),
+          );
+          if (disposed || signal?.aborted) throw new ShippingError("cancelled");
+          await fs.reader.validate_tree_bounded(
+            root,
+            BigInt(MAX_SNAPSHOT_BYTES),
+          );
+          if (disposed || signal?.aborted) throw new ShippingError("cancelled");
+          return commitWorkspaceRoot(request.expectedHead, root, now());
+        });
       case "reclaim":
         return withMutationLock(() => reclaimUnused(fs));
       case "export": {
@@ -369,6 +437,7 @@ export function createFilesystemRuntime({
 
 export function filesystemErrorCode(error) {
   if (
+    error instanceof ShippingError ||
     error instanceof RegistrationError ||
     error instanceof CatalogError ||
     error instanceof ZipImportError ||

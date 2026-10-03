@@ -1,0 +1,67 @@
+{
+  "schema": "castalia.private-files-shipping-provenance.v1",
+  "date": "2026-10-03",
+  "baseFilesystemRevision": "31d6005a23d9e2e343eb57127d7aeee67543f14f",
+  "walletRegistrationBase": "5adc63bd929bb761e0ff27d6e201424e67f930c0",
+  "webConsumerBase": "e4037e1d9e3f5a1e3d6c5510f212989907aabc97",
+  "zenithConsumerBase": "dc95231b3b280c4175b4baa031277912a799e153",
+  "newSource": [
+    "packages/browser/src/files-key-contract.mjs",
+    "packages/browser/src/files-key-contract.d.mts",
+    "packages/browser/src/shipping*.mjs",
+    "packages/browser/src/shipping*.d.mts",
+    "services/"
+  ],
+  "adaptedInheritedSource": [
+    "packages/browser/src/runtime.mjs",
+    "packages/browser/src/filesystem-client.mjs",
+    "packages/browser/src/reclaim.mjs"
+  ],
+  "fixtures": "Synthetic existing registration and base-membership lineage plus generated isolated Files tests; no real owner keys.",
+  "declaration": "AGPL-3.0-or-later for new additions; no destination-license grant inferred for inherited source.",
+  "permissions": "Inherited Web modules/tests and Wallet-derived verification inputs remain unresolved as previously recorded.",
+  "distribution": "Browser and operator packages have separate complete manifests. Server credentials and s3d binary are excluded.",
+  "integrityBoundary": "Candidate manifests bind final source hashes; a passing verifier is not source permission or policy acceptance.",
+  "adaptations": [
+    {
+      "path": "packages/browser/src/index.d.mts",
+      "previousRevision": "31d6005a23d9e2e343eb57127d7aeee67543f14f",
+      "previousSha256": "59eef181dc8bc905d66c40c2683c7c4c755a06d6f5ea10e79034f52d71e2d899",
+      "currentSha256": "9964bb09047110bb5075da2cdd8d1c898c3d7713825f5d1248da60103cebb05e",
+      "change": "Add typed immutable shipping capture, verification, release and expected-head restore methods.",
+      "sourcePermission": "unresolved; no new grant inferred"
+    },
+    {
+      "path": "packages/browser/tests/local-boundary.test.mjs",
+      "previousRevision": "31d6005a23d9e2e343eb57127d7aeee67543f14f",
+      "previousSha256": "af783f9205d6fa501529df54328a907b17bac461c4f3ecb34e697e47b313a18c",
+      "currentSha256": "8da8a3ec01847bec236a8da4e377fa1e0b2223129c568b52888428e0f987ef60",
+      "change": "Retain zero-egress dependency closure for local entrypoints; permit fetch only in the explicitly selected shipping entrypoint.",
+      "sourcePermission": "unresolved; no new grant inferred"
+    },
+    {
+      "path": "packages/browser/src/filesystem-client.mjs",
+      "previousRevision": "31d6005a23d9e2e343eb57127d7aeee67543f14f",
+      "previousSha256": "83d6b7550c1c971446b2570d1830509df5cafcfcc719fb06898adc9873361bd0",
+      "currentSha256": "4b1cda2e0bb3e182f6aea2fefee0f537e4962389b16504632e13b38cfb6c8369",
+      "change": "Forward additive immutable shipment worker operations.",
+      "sourcePermission": "unresolved; no new grant inferred"
+    },
+    {
+      "path": "packages/browser/src/runtime.mjs",
+      "previousRevision": "31d6005a23d9e2e343eb57127d7aeee67543f14f",
+      "previousSha256": "4275fd55512cef841ce6db3a43f7cbcf62ba7a2c94d469946798758e1b72d7cd",
+      "currentSha256": "25661391aae59b5d13285ef1c0261c44f5a3d9757caff2b4227e29c9beaa53d3",
+      "change": "Preserve source roots and import verified immutable transport under existing mutation locks.",
+      "sourcePermission": "unresolved; no new grant inferred"
+    },
+    {
+      "path": "packages/browser/src/reclaim.mjs",
+      "previousRevision": "31d6005a23d9e2e343eb57127d7aeee67543f14f",
+      "previousSha256": "0f64d8573446f79d98a4eebcb8ffc57a971707c09beb540efc25791c638a2eff",
+      "currentSha256": "3ec370df92e70bd0061049b0a9c12ef02e2e3c3018bcd88b0bda7cf68772dd08",
+      "change": "Retain selected workspace shipping pins without changing existing catalog schema.",
+      "sourcePermission": "unresolved; no new grant inferred"
+    }
+  ]
+}

@@ -3,8 +3,10 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import ts from "typescript";
 const root = new URL("../src/", import.meta.url);
-test("shared browser adapter imports only its local modules and pinned ZIP and has no egress primitives", () => {
+test("local filesystem entrypoints retain zero egress; only the explicit shipping entrypoint may fetch", () => {
   const violations = [];
+  const imports = new Map();
+  let shippingFetches=0;
   for (const name of readdirSync(root).filter((name) =>
     name.endsWith(".mjs"),
   )) {
@@ -22,6 +24,7 @@ test("shared browser adapter imports only its local modules and pinned ZIP and h
         ts.isStringLiteral(node.moduleSpecifier)
       ) {
         const text = node.moduleSpecifier.text;
+        if(text.startsWith("./"))imports.set(name,[...(imports.get(name)??[]),text.slice(2)]);
         if (
           !text.startsWith("./") &&
           text !== "@zip.js/zip.js/lib/zip-core-native.js"
@@ -40,7 +43,8 @@ test("shared browser adapter imports only its local modules and pinned ZIP and h
         if (
           ["fetch", "sendBeacon", "importScripts", "require"].includes(method)
         )
-          violations.push(name + ":" + method);
+          if(name==="shipping.mjs" && method==="fetch") shippingFetches++;
+          else violations.push(name + ":" + method);
       }
       if (
         ts.isNewExpression(node) &&
@@ -59,4 +63,9 @@ test("shared browser adapter imports only its local modules and pinned ZIP and h
     visit(source);
   }
   assert.deepEqual(violations, []);
+  // Runtime/custody/storage imports stay local even when a shipping journal exists.
+  const visited=new Set();
+  function walk(name){if(visited.has(name))return;visited.add(name);assert.notEqual(name,"shipping.mjs");for(const child of imports.get(name)??[])walk(child);}
+  for(const name of ["index.mjs","worker.mjs","registration.mjs"])walk(name);
+  assert.equal(shippingFetches,1);
 });
