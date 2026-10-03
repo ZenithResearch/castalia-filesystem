@@ -1,0 +1,38 @@
+{
+  "schema": "castalia.s3d-release-checksums.v1",
+  "repository": "https://github.com/SiaFoundation/s3d",
+  "tag": "v0.2.0",
+  "revision": "e468d007cfc9eefa083d09b5a858ba294f64f6cf",
+  "evidence": "https://api.github.com/repos/SiaFoundation/s3d/releases/tags/v0.2.0",
+  "observedAt": "2026-10-03",
+  "assets": [
+    {
+      "platform": "darwin",
+      "arch": "x64",
+      "name": "s3d_darwin_amd64.zip",
+      "size": 7361465,
+      "sha256": "d7fe282efab35242b001ed9040d833334034682225b4c2b6b2eda67ecca8992e"
+    },
+    {
+      "platform": "darwin",
+      "arch": "arm64",
+      "name": "s3d_darwin_arm64.zip",
+      "size": 5539516,
+      "sha256": "9eb6b73cb30b5b6b54fbbc583af6f7d9e56a30c55247ac70568918a1c98a3353"
+    },
+    {
+      "platform": "linux",
+      "arch": "x64",
+      "name": "s3d_linux_amd64.zip",
+      "size": 7551545,
+      "sha256": "e537d68be8b6749e3e239d572c497a4f1ebc81ef5a3b70d5ec3cc9ffa6498e73"
+    },
+    {
+      "platform": "linux",
+      "arch": "arm64",
+      "name": "s3d_linux_arm64.zip",
+      "size": 5798839,
+      "sha256": "76848764f09922f31489c809514cdc928b3882836d6e5b64dcac085a84b4958b"
+    }
+  ]
+}

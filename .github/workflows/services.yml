@@ -1,0 +1,36 @@
+name: Files index and gateway services
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  services:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.18.0
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm ci --prefix services --ignore-scripts --no-audit --no-fund
+      - run: node --test services/tests/*.test.mjs
+      - name: Build and compare complete operator packages
+        run: |
+          node services/scripts/build-package.mjs "$RUNNER_TEMP/files-services-a"
+          node services/scripts/build-package.mjs "$RUNNER_TEMP/files-services-b"
+          diff -qr "$RUNNER_TEMP/files-services-a" "$RUNNER_TEMP/files-services-b"
+          cd "$RUNNER_TEMP/files-services-a"
+          node --test services/tests/*.test.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: castalia-files-services-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/files-services-a
+          include-hidden-files: true
+          if-no-files-found: error
