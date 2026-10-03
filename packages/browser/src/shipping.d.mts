@@ -59,7 +59,7 @@ export interface FilesKeyProvider {
     subjectId?: string;
   }>;
   wrapFilesKey(input: FilesWrapRequestV1): Promise<FilesKeyEnvelopeV1>;
-  unwrapFilesKey(input: FilesWrapRequestV1): Promise<{ key: string }>;
+  unwrapFilesKey(input: FilesUnwrapRequestV1): Promise<{ key: string }>;
   requestFilesServiceAuthentication(
     input: FilesServiceAuthRequestV1,
   ): Promise<FilesSignaturePresentationV1>;
