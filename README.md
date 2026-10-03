@@ -6,7 +6,7 @@ Portable immutable filesystem snapshots and a browser Worker WASM bridge for Cas
 
 The portable core supplies strict canonical v1 manifests, bounded reads, snapshot construction and copy-on-write revisions. The optional native adapter and CLI remain available for focused testing; kernel FUSE mounts are not qualified. Browser storage adapters and authoritative namespace integration are subsequent work.
 
-Existing manifest bytes, content IDs, namespace fields and fixtures are preserved. Snapshot namespace is an opaque identity, not authorization. See [the wire contract](docs/SNAPSHOT-V1.md), [provenance](PROVENANCE.md) and [candidate builds](docs/CANDIDATE-BUILDS.md).
+Existing manifest bytes, content IDs, namespace fields and fixtures are preserved. Snapshot namespace is an opaque identity, not authorization. See [the wire contract](docs/SNAPSHOT-V1.md), [provenance](docs/SOURCE-PROVENANCE.md) and [candidate builds](docs/CANDIDATE-BUILDS.md).
 
 ## Verify
 
@@ -31,4 +31,4 @@ Builds and CI do not publish packages, merge branches or deploy applications. A 
 
 ## License
 
-AGPL-3.0-or-later. See [LICENSE](LICENSE) and the retained historical attribution in [PROVENANCE.md](PROVENANCE.md).
+AGPL-3.0-or-later. See [LICENSE](LICENSE) and the retained historical attribution in [source provenance](docs/SOURCE-PROVENANCE.md). See the [third-party notices](docs/THIRD-PARTY-NOTICES.md) and [distribution review](docs/AGPL-DISTRIBUTION.md); package verification does not establish clearance.

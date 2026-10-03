@@ -1,10 +1,11 @@
-import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, cp } from "node:fs/promises";
 import { homedir } from "node:os";
 import { canonicalBuildFlags } from "./lib/build-paths.mjs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { command, lockedMetadata, RUST_TOOLCHAIN, NODE_VERSION } from "./lib/process.mjs";
 import { digest, inventory, verifyPackage, MANIFEST, SCHEMA, REPOSITORY } from "./lib/package-manifest.mjs";
+import { verifyNotices } from "./lib/notices.mjs";
 import { assertBindingToolProducers } from "./lib/binding-producers.mjs";
 import { stripWasmNameSection } from "./lib/strip-wasm-name.mjs";
 
@@ -68,6 +69,7 @@ for (const manifest of ["Cargo.toml", "castalia-filesystem-wasm/Cargo.toml"]) {
     }
   }
 }
+await verifyNotices(root, locks);
 await mkdir(output); // Never overwrite a prior candidate or its acceptance evidence.
 for (const [target, folder] of [["web", "web"], ["nodejs", "node"]]) {
   command("wasm-pack", ["build", join(root, "castalia-filesystem-wasm"),
@@ -86,6 +88,9 @@ console.log(command(process.execPath, [join(root, "castalia-filesystem-wasm/test
 await copyFile(join(root, "LICENSE"), join(output, "LICENSE"));
 await copyFile(join(root, "docs/SNAPSHOT-V1.md"), join(output, "SNAPSHOT-V1.md"));
 await mkdir(join(output,"provenance"));
+await mkdir(join(output,"docs"));
+await cp(join(root,"licenses"),join(output,"licenses"),{recursive:true,dereference:false});
+for(const path of ["docs/SOURCE-PROVENANCE.md","docs/THIRD-PARTY-NOTICES.md","docs/AGPL-DISTRIBUTION.md","provenance/notices.json","provenance/extraction.json"])await copyFile(join(root,path),join(output,path));
 for(const path of ["provenance/build-tools.json","provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"])await copyFile(join(root,path),join(output,path));
 for (const [path, expected] of Object.entries(locks)) {
   if (digest(await readFile(join(root, path))) !== expected) throw new Error(`lock changed during build: ${path}`);

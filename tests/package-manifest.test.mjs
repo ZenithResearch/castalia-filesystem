@@ -1,3 +1,4 @@
+import { noticeFixture } from "./helpers/notice-fixture.mjs";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { mkdtemp, mkdir, writeFile, readFile, symlink, rm } from "node:fs/promises";
@@ -21,6 +22,9 @@ async function fixture(t, patch = {}) {
   await mkdir(join(directory,"provenance"));
   await writeFile(join(directory,"provenance/build-tools.json"),"synthetic tool provenance");
   await writeFile(join(directory,"provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"),"synthetic tool lock");
+  await mkdir(join(directory,"docs"));
+  for(const path of ["docs/SOURCE-PROVENANCE.md","docs/THIRD-PARTY-NOTICES.md","docs/AGPL-DISTRIBUTION.md","provenance/extraction.json"])await writeFile(join(directory,path),"synthetic provenance");
+  await noticeFixture(directory,{"castalia-filesystem-wasm/Cargo.lock":"c".repeat(64),"provenance/wasm-bindgen-cli-0.2.127.Cargo.lock":digest("synthetic tool lock")});
   const manifest = {
     schema: SCHEMA,
     source: { repository: REPOSITORY, revision, dirty: false, mode: "candidate" },
@@ -38,7 +42,7 @@ async function fixture(t, patch = {}) {
 test("complete package verifies against independent source and digest", async (t) => {
   const f = await fixture(t);
   const manifest = await verifyPackage(f.directory, f.hash, revision);
-  assert.equal(manifest.files.length, 12);
+  assert.equal(manifest.files.length, 19);
 });
 
 test("changed bytes, missing source pin and wrong digest reject", async (t) => {
@@ -88,3 +92,6 @@ test("publishable or source-unbound metadata fails after inventory verification"
   await writeFile(join(f.directory, MANIFEST), bytes);
   await assert.rejects(verifyPackage(f.directory, digest(bytes), revision), /publishable/);
 });
+
+// Rehashing the outer inventory cannot make missing source notices a complete package.
+test("required notice payloads cannot be omitted even with a freshly calculated manifest",async t=>{const f=await fixture(t);await rm(join(f.directory,"licenses/cargo-runtime-notices.txt"));f.manifest.files=await inventory(f.directory);const bytes=JSON.stringify(f.manifest);await writeFile(join(f.directory,MANIFEST),bytes);await assert.rejects(verifyPackage(f.directory,digest(bytes),revision),/missing package file/);});

@@ -1,3 +1,4 @@
+import { verifyNotices } from "./notices.mjs";
 import { createHash } from "node:crypto";
 import { lstat, readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -87,7 +88,7 @@ export async function verifyPackage(directory, expectedDigest, expectedRevision,
   if (JSON.stringify(actual) !== JSON.stringify(manifest.files)) {
     throw new Error("package inventory or bytes differ");
   }
-  for (const path of ["LICENSE", "SNAPSHOT-V1.md", "provenance/build-tools.json", "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock",
+  for (const path of ["docs/SOURCE-PROVENANCE.md","docs/THIRD-PARTY-NOTICES.md","docs/AGPL-DISTRIBUTION.md","provenance/notices.json","provenance/extraction.json","licenses/cargo-runtime-notices.txt","licenses/rust-standard-library.html","LICENSE", "SNAPSHOT-V1.md", "provenance/build-tools.json", "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock",
     "web/castalia_filesystem_wasm.js", "web/castalia_filesystem_wasm.d.ts",
     "web/castalia_filesystem_wasm_bg.wasm", "web/package.json",
     "node/castalia_filesystem_wasm.js", "node/castalia_filesystem_wasm.d.ts",
@@ -101,5 +102,6 @@ export async function verifyPackage(directory, expectedDigest, expectedRevision,
       throw new Error("unbound or publishable generated package");
     }
   }
+  await verifyNotices(directory, manifest.locks);
   return manifest;
 }
