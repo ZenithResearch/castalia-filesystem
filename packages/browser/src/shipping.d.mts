@@ -73,6 +73,8 @@ export interface ShippingDestination {
   registrationGenesisDigest: string;
   controllerMemberKey: string;
   canonicalAlias?: "zenith";
+  canSubmit?: boolean;
+  canUpdateOwn?: boolean;
 }
 export interface ShippingIdentity {
   ownerMemberKey: string;

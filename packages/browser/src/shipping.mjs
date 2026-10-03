@@ -398,7 +398,9 @@ export function openShippingSession(rawConfig, provider) {
       personalOwner,
     );
     if (d && d.entityClass !== PERSON_CLASS) fail("registration-mismatch");
-    return d;
+    return d
+      ? Object.freeze({ ...d, canSubmit: true, canUpdateOwn: true })
+      : null;
   }
   async function connections() {
     const values = await index("/v1/connections");
@@ -446,6 +448,7 @@ export function openShippingSession(rawConfig, provider) {
     if (!Array.isArray(values) || values.length > 1024) fail("limit");
     exactObject(discovery, ["personal", "zenith"]);
     const zenith = discovery.zenith;
+    let canUpdateOwn = false;
     if (zenith?.state === "pending") {
       exactObject(zenith, ["state", "reason"]);
       if (typeof zenith.reason !== "string" || zenith.reason.length > 1024)
@@ -456,26 +459,43 @@ export function openShippingSession(rawConfig, provider) {
         "namespaceId",
         "registrationGenesisDigest",
         "canSubmit",
+        ...(Object.hasOwn(zenith, "canUpdateOwn") ? ["canUpdateOwn"] : []),
       ]);
       hexId(zenith.namespaceId);
       hexId(zenith.registrationGenesisDigest);
       if (typeof zenith.canSubmit !== "boolean") fail("invalid-response");
+      if (Object.hasOwn(zenith, "canUpdateOwn")) {
+        if (typeof zenith.canUpdateOwn !== "boolean") fail("invalid-response");
+        canUpdateOwn = zenith.canUpdateOwn;
+      }
     } else fail("invalid-response");
     const result = [];
     for (const value of values) {
       const destination = await decodeNamespace(value, personalOwner);
       if (!destination) continue;
-      if (destination.entityClass === PERSON_CLASS) result.push(destination);
+      if (destination.entityClass === PERSON_CLASS)
+        result.push(
+          Object.freeze({
+            ...destination,
+            canSubmit: true,
+            canUpdateOwn: true,
+          }),
+        );
       else if (
         destination.entityClass === ORGANIZATION_CLASS &&
         zenith.state === "registered" &&
-        zenith.canSubmit &&
+        (zenith.canSubmit || canUpdateOwn) &&
         destination.namespaceId === zenith.namespaceId &&
         destination.registrationGenesisDigest ===
           zenith.registrationGenesisDigest
       )
         result.push(
-          Object.freeze({ ...destination, canonicalAlias: "zenith" }),
+          Object.freeze({
+            ...destination,
+            canonicalAlias: "zenith",
+            canSubmit: zenith.canSubmit,
+            canUpdateOwn,
+          }),
         );
     }
     return result;
@@ -882,7 +902,13 @@ export function openShippingSession(rawConfig, provider) {
         x.workspaceId === selected.workspaceId &&
         x.registrationGenesisDigest === selected.registrationGenesisDigest,
     );
-    if (!accepted) fail("authority-denied");
+    if (
+      !accepted ||
+      !(previousRevisionId === null
+        ? accepted.canSubmit
+        : accepted.canUpdateOwn)
+    )
+      fail("authority-denied");
     if (submissionId === undefined && previousRevisionId !== null)
       fail("invalid");
     if (previousRevisionId !== null) hexId(previousRevisionId);

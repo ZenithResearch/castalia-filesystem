@@ -518,3 +518,99 @@ test("unknown upload status fails closed before initialization retry or part pub
   assert.equal(parts, 0);
   assert.equal(env.f.index.inventory(owner).length, 0);
 });
+
+test("update-only destinations allow existing-owner revisions but reject new submissions and revoked grants", async (t) => {
+  const env = await environment(t),
+    session = env.session(),
+    { manifest, accepted } = await register(env.f, true);
+  env.f.index.canonicalBindings = [
+    {
+      alias: "zenith",
+      namespaceId: manifest.namespaceId,
+      registrationGenesisDigest:
+        accepted.receipt.payload.registrationGenesisDigest,
+    },
+  ];
+  const grant = {
+    namespaceId: manifest.namespaceId,
+    granteeMemberKey: owner,
+    workspaceId: manifest.initialWorkspaceId,
+    actions: ["submit", "update-own"],
+    maxBytes: 1024,
+    expiresAt: new Date(Date.now() + 3600000).toISOString(),
+  };
+  env.f.index.setGrant(owner, grant);
+  await session.saveConnection(env.config.connection);
+  const destination = (await session.destinations()).find(
+    (v) => v.canonicalAlias === "zenith",
+  );
+  const first = await session.ship({ source: env.source, destination });
+  // Older discovery responses may report submit authority only. Never infer update authority from it.
+  env.setIntercept(async (url, options, next) => {
+    const response = await next(url, options);
+    if (url.endsWith("/v1/destinations")) {
+      const value = await response.json();
+      delete value.zenith.canUpdateOwn;
+      return new Response(JSON.stringify(value), {
+        headers: { "content-type": "application/json" },
+      });
+    }
+    return response;
+  });
+  assert.equal(
+    (await session.destinations()).find((v) => v.canonicalAlias === "zenith")
+      .canUpdateOwn,
+    false,
+  );
+  await assert.rejects(
+    session.ship({
+      source: env.source,
+      destination,
+      submissionId: first.binding.submissionId,
+      previousRevisionId: first.binding.revisionId,
+    }),
+    { code: "authority-denied" },
+  );
+  env.setIntercept((url, options, next) => next(url, options));
+  env.f.index.setGrant(owner, { ...grant, actions: ["update-own"] });
+  const updateDestination = (await session.destinations()).find(
+    (v) => v.canonicalAlias === "zenith",
+  );
+  assert.equal(updateDestination.canSubmit, false);
+  assert.equal(updateDestination.canUpdateOwn, true);
+  await assert.rejects(
+    session.ship({ source: env.source, destination: updateDestination }),
+    { code: "authority-denied" },
+  );
+  assert.equal(env.f.transport.completed, 1);
+  const updated = await session.ship({
+    source: env.source,
+    destination: updateDestination,
+    submissionId: first.binding.submissionId,
+    previousRevisionId: first.binding.revisionId,
+  });
+  assert.equal(updated.status, "Shipped");
+  assert.equal(env.f.index.inventory(owner)[0].sequence, 2);
+  env.f.index.revokeGrant(owner, {
+    namespaceId: manifest.namespaceId,
+    granteeMemberKey: owner,
+  });
+  await assert.rejects(
+    session.ship({
+      source: env.source,
+      destination: updateDestination,
+      submissionId: updated.binding.submissionId,
+      previousRevisionId: updated.binding.revisionId,
+    }),
+    { code: "authority-denied" },
+  );
+  assert.equal(env.f.transport.completed, 2);
+  assert.deepEqual(
+    new Uint8Array(
+      await (
+        await session.retrieve(updated.binding.submissionId)
+      ).blob.arrayBuffer(),
+    ),
+    env.content,
+  );
+});
