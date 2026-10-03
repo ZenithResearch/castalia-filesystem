@@ -678,18 +678,52 @@ export function openShippingSession(rawConfig, provider) {
           "/v1/uploads/" + record.operationId,
           { allowMissing: true, signal },
         );
-        if (!state)
+        const validateState = (value) => {
+          exactObject(value, [
+            "operationId",
+            "state",
+            "partBytes",
+            "parts",
+            "receipt",
+          ]);
+          if (
+            value.operationId !== record.operationId ||
+            value.partBytes !== SHIPPING_LIMITS.partBytes ||
+            !Array.isArray(value.parts) ||
+            ![
+              "initializing",
+              "initialization-uncertain",
+              "uploading",
+              "completion-uncertain",
+              "verifying",
+              "stored",
+            ].includes(value.state) ||
+            (value.state === "stored") !== (value.receipt !== null) ||
+            (["initializing", "initialization-uncertain"].includes(
+              value.state,
+            ) &&
+              value.parts.length !== 0)
+          )
+            fail("invalid-response");
+        };
+        if (state !== null) validateState(state);
+        // The gateway owns initiation reconciliation. Reuse this exact signed intent;
+        // a missing initiation response must not strand its existing multipart upload.
+        if (
+          state === null ||
+          ["initializing", "initialization-uncertain"].includes(state.state)
+        ) {
           state = await gateway(record.connection, "/v1/uploads", {
             method: "POST",
             body: { intent: record.intent },
             signal,
           });
-        if (
-          state.operationId !== record.operationId ||
-          state.partBytes !== SHIPPING_LIMITS.partBytes ||
-          !Array.isArray(state.parts)
-        )
-          fail("invalid-response");
+          validateState(state);
+          if (
+            ["initializing", "initialization-uncertain"].includes(state.state)
+          )
+            fail("initialization-uncertain");
+        }
         if (!state.receipt) {
           record.detail = "Uploading encrypted parts";
           await save(record);
@@ -1098,7 +1132,8 @@ export function openShippingSession(rawConfig, provider) {
       return () => listeners.delete(listener);
     },
     currentStatus(record, root) {
-      return record.status === "Shipped" && record.sourceRoot !== root
+      return ["Shipping", "Shipped"].includes(record.status) &&
+        record.sourceRoot !== root
         ? "Local changes"
         : record.status;
     },

@@ -449,10 +449,72 @@ test("browser destination discovery requires canonical namespace and genesis, ne
         accepted.receipt.payload.registrationGenesisDigest,
     },
   ];
+  env.f.index.setGrant(owner, {
+    namespaceId: manifest.namespaceId,
+    granteeMemberKey: owner,
+    workspaceId: manifest.initialWorkspaceId,
+    actions: ["submit"],
+    maxBytes: 1024,
+    expiresAt: new Date(Date.now() + 3600000).toISOString(),
+  });
   const destinations = await session.destinations();
   assert.equal(destinations.length, 2);
   assert.equal(destinations[1].canonicalAlias, "zenith");
   assert.equal(destinations[1].namespaceId, manifest.namespaceId);
   env.f.index.canonicalBindings[0].registrationGenesisDigest = id(12345);
   assert.equal((await session.destinations()).length, 1);
+});
+
+test("lost multipart initiation reply resumes the existing upload without a duplicate initialization", async (t) => {
+  const env = await environment(t),
+    session = env.session();
+  await session.saveConnection(env.config.connection);
+  env.f.transport.loseInitialization = true;
+  await assert.rejects(session.ship({ source: env.source }));
+  const [record] = await session.operations();
+  assert.equal(
+    env.f.gateway.status(owner, record.operationId).state,
+    "initialization-uncertain",
+  );
+  assert.equal(env.f.transport.counter, 1);
+  assert.equal(record.status, "Shipping");
+  assert.equal(session.currentStatus(record, id(999)), "Local changes");
+  assert.equal(session.currentStatus(record, env.source.root), "Shipping");
+  assert.equal(record.status, "Shipping");
+  assert.equal((await session.resume(record.operationId)).status, "Shipped");
+  assert.equal(env.f.transport.completed, 1);
+  assert.equal(env.f.transport.counter, 2);
+  assert.equal(env.f.index.inventory(owner)[0].sequence, 1);
+});
+test("unknown upload status fails closed before initialization retry or part publication", async (t) => {
+  const env = await environment(t),
+    session = env.session();
+  await session.saveConnection(env.config.connection);
+  env.f.transport.loseInitialization = true;
+  await assert.rejects(session.ship({ source: env.source }));
+  const [record] = await session.operations();
+  let retried = 0,
+    parts = 0;
+  env.setIntercept(async (url, options, next) => {
+    if (options.method === "POST" && url.endsWith("/v1/uploads")) retried++;
+    if (options.method === "PUT") parts++;
+    const response = await next(url, options);
+    if (
+      options.method === "GET" &&
+      url.endsWith("/v1/uploads/" + record.operationId)
+    ) {
+      const value = await response.json();
+      value.state = "future-initialization";
+      return new Response(JSON.stringify(value), {
+        headers: { "content-type": "application/json" },
+      });
+    }
+    return response;
+  });
+  await assert.rejects(session.resume(record.operationId), {
+    code: "invalid-response",
+  });
+  assert.equal(retried, 0);
+  assert.equal(parts, 0);
+  assert.equal(env.f.index.inventory(owner).length, 0);
 });
