@@ -346,3 +346,64 @@ test("an organization controller needs an explicit bounded self-grant for upload
   );
   assert.equal(f.index.history(owner, id(2)).revisions.length, 1);
 });
+
+test("organization discovery distinguishes update-own-only grants from fresh submission authority", async (t) => {
+  const f = fixture(t),
+    { manifest, accepted } = await register(f, true);
+  f.index.canonicalBindings = [
+    {
+      alias: "zenith",
+      namespaceId: manifest.namespaceId,
+      registrationGenesisDigest:
+        accepted.receipt.payload.registrationGenesisDigest,
+    },
+  ];
+  const grant = {
+    namespaceId: manifest.namespaceId,
+    granteeMemberKey: owner,
+    workspaceId: manifest.initialWorkspaceId,
+    actions: ["submit", "update-own"],
+    maxBytes: 32,
+    expiresAt: "2026-10-04T00:00:00.000Z",
+  };
+  f.index.setGrant(owner, grant);
+  const first = intent(f, manifest),
+    firstReceipt = await stored(f, first);
+  f.index.commit(owner, commitInput(first, firstReceipt));
+  f.index.setGrant(owner, { ...grant, actions: ["update-own"] });
+  assert.equal(f.index.namespaces(owner).length, 1);
+  assert.equal(f.index.destinations(owner).zenith.canSubmit, false);
+  assert.equal(f.index.destinations(owner).zenith.canUpdateOwn, true);
+  assert.throws(
+    () =>
+      intent(f, manifest, {
+        operationId: id(31),
+        submissionId: id(32),
+        revisionId: id(33),
+      }),
+    { code: "namespace-admission-denied" },
+  );
+  const next = intent(f, manifest, {
+    operationId: id(34),
+    revisionId: id(35),
+    expectedRevisionId: id(3),
+  });
+  f.index.commit(owner, commitInput(next, await stored(f, next)));
+  assert.equal(f.index.inventory(owner)[0].sequence, 2);
+  f.index.revokeGrant(owner, {
+    namespaceId: manifest.namespaceId,
+    granteeMemberKey: owner,
+  });
+  assert.equal(f.index.namespaces(owner).length, 0);
+  assert.equal(f.index.destinations(owner).zenith.canUpdateOwn, false);
+  assert.throws(
+    () =>
+      intent(f, manifest, {
+        operationId: id(36),
+        revisionId: id(37),
+        expectedRevisionId: id(35),
+      }),
+    { code: "namespace-admission-denied" },
+  );
+  assert.equal(f.index.history(owner, id(2)).revisions.length, 2);
+});

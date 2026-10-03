@@ -174,14 +174,13 @@ export class FilesIndex {
     return this.db
       .prepare("SELECT * FROM namespaces ORDER BY id")
       .all()
-      .filter((row) =>
-        this.canAdmit(
-          owner,
-          row,
-          JSON.parse(row.value).manifest.initialWorkspaceId,
-          0,
-        ),
-      )
+      .filter((row) => {
+        const workspace = JSON.parse(row.value).manifest.initialWorkspaceId;
+        return (
+          this.canAdmit(owner, row, workspace, 0, "submit") ||
+          this.canAdmit(owner, row, workspace, 0, "update-own")
+        );
+      })
       .map((row) => this.namespaceResponse(JSON.parse(row.value)));
   }
   destinations(owner) {
@@ -206,6 +205,14 @@ export class FilesIndex {
               row,
               JSON.parse(row.value).manifest.initialWorkspaceId,
               0,
+              "submit",
+            ),
+            canUpdateOwn: this.canAdmit(
+              owner,
+              row,
+              JSON.parse(row.value).manifest.initialWorkspaceId,
+              0,
+              "update-own",
             ),
           }
         : {
