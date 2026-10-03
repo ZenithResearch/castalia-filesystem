@@ -23,3 +23,10 @@ Preserve unavailable database errors through the worker boundary, make registrat
 2026-10-03: Correct the older AGPL document-copy ancestry, retain existing declarations, and ship exact third-party/standard-library notices with a lock-bound byte inventory. Add distribution-review guidance without asserting new grants or changing runtime code, formats or dependency locks.
 
 2026-10-03: Add seven explicitly inferred supplemental Web origin mappings with exact preserved hashes; distinguish policy acceptance from missing Web/Wallet permissions. Runtime modules, signing bytes, storage/recovery formats and dependency locks remain unchanged.
+
+## Private Files shipping candidate — 2026-10-03
+
+- Add typed Files key and receipt contracts; preserve existing recovery and registration formats.
+- Add separate private index/gateway services and reproducible operator packaging.
+- Add immutable encrypted shipping, fresh retrieval verification, durable resume and scoped source retention.
+- Add explicit recovery import with expected-head checks; retain source permission and real-host qualification blockers.

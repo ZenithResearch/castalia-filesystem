@@ -80,7 +80,7 @@ jobs:
           node scripts/build-package.mjs --out-dir "$RUNNER_TEMP/filesystem-candidate"
           echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Test adapter against the complete actual WASM candidate
-        run: FILESYSTEM_WASM_PACKAGE="$RUNNER_TEMP/filesystem-candidate" node --test packages/browser/tests/runtime-wasm.test.mjs
+        run: FILESYSTEM_WASM_PACKAGE="$RUNNER_TEMP/filesystem-candidate" node --test packages/browser/tests/runtime-wasm.test.mjs packages/browser/tests/shipping-archive.test.mjs
       - name: Upload candidate bytes without publication
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

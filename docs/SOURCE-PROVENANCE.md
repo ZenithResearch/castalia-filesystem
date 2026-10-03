@@ -11,3 +11,7 @@ The portable code has only generic registry dependencies. Its own WASM-to-core p
 Candidate source identity is read from Git during the build and written only to generated output. It is not embedded as a self-referential constant in tracked source. Public consumers must record both the immutable source commit and independently reviewed package-manifest digest. Historical source retrieval and new candidate publication are distinct provenance facts.
 
 The observed AGPL declarations are retained. This provenance record does not establish additional licensing authority. Missing permission evidence for separately inherited material must be addressed without relabeling it. See [distribution review](AGPL-DISTRIBUTION.md) and [third-party notices](THIRD-PARTY-NOTICES.md).
+
+## Private shipping additions (2026-10-03)
+
+The Files consent helper and new envelope/receipt contracts were developed together with the Wallet and Web custody adapters from the preserved registration candidates. New browser shipping and Node service modules are original additions in this review. Source-retention hooks adapt the existing derived runtime, client and reclamation modules, whose recorded source permissions remain unresolved. Synthetic integration fixtures reuse the existing registration/base-membership fixture lineage; no test key or destination is a real organization. See `provenance/private-shipping.json` for paths and scope. No private Git history, credential or sealed authority evidence is included.
