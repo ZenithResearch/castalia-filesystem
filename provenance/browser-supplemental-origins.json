@@ -1,0 +1,667 @@
+{
+  "schema": "castalia.browser-supplemental-origins.v1",
+  "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+  "inspectedDestinationRevision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+  "purpose": "Supplementary origin-review mappings; preserves the nine existing module and seven retained-test declared mappings. These are inferred correspondences, not grants or ownership conclusions.",
+  "records": [
+    {
+      "id": "SUP-02",
+      "sources": [
+        {
+          "repository": "ZenithResearch/castalia-web",
+          "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "path": "apps/web/src/files/catalog.ts",
+          "sha256": "6ab6273a4e20ad7354fe40312f808c65615c434a9d6ffcaabb18f4be89784a92",
+          "gitBlob": "ffa2679ffd765d7c0b3515625e1d3283252ac1a4"
+        }
+      ],
+      "destination": {
+        "repository": "ZenithResearch/castalia-filesystem",
+        "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "path": "packages/browser/src/catalog.mjs",
+        "sha256": "2262be54c6afba0a8d16ea4200fbe30ffea8aa753ab85908c32df3e58b379ad4",
+        "gitBlob": "d763ea783a9e4483fd13668f0e295f462d059610"
+      },
+      "classification": "inferred inherited/mixed origin candidate",
+      "comparisonStatus": "documented",
+      "derivationStatus": "unresolved",
+      "permissionStatus": "unresolved",
+      "confidence": "inferred strong structural lineage",
+      "inference": true,
+      "observations": [
+        "The source commitRecoveredCatalog and destination recoverInvalid both reject a missing catalog, call the strict v1 parser, reject a currently valid catalog, permit replacement only when that parser reports invalid, and reset revisions to the replacement root.",
+        "The destination commitRoot retains expected-head comparison, duplicate-root rejection and the 1024-revision cap, while factoring writes through a reusable catalog wrapper that preserves scoped-row metadata.",
+        "This is stronger functional/structural correspondence than a single token run, but storage rules also reflect an intentional shared compatibility contract."
+      ],
+      "structuralEvidence": [
+        {
+          "sourcePath": "apps/web/src/files/catalog.ts",
+          "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "sourceSha256": "6ab6273a4e20ad7354fe40312f808c65615c434a9d6ffcaabb18f4be89784a92",
+          "destination": "packages/browser/src/catalog.mjs",
+          "destinationRevision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+          "destinationSha256": "2262be54c6afba0a8d16ea4200fbe30ffea8aa753ab85908c32df3e58b379ad4",
+          "method": "lexical unchanged-token blocks after excluding comments/whitespace; generic patterns may match coincidentally, so this is corroboration not a copying/ownership determination",
+          "matchingBlocks": [
+            {
+              "sourceLines": [
+                133,
+                138
+              ],
+              "destinationLines": [
+                158,
+                163
+              ],
+              "tokenCount": 34,
+              "tokenBlockSha256": "07b6c741cdcad3b95529499ac86545423a14d895b433b24dcac3a774e126fa13"
+            },
+            {
+              "sourceLines": [
+                117,
+                121
+              ],
+              "destinationLines": [
+                112,
+                116
+              ],
+              "tokenCount": 27,
+              "tokenBlockSha256": "d5a931a47d03927a5ea5aca830527cf03d504171581b0a6091dfad9ffca9367e"
+            },
+            {
+              "sourceLines": [
+                4,
+                5
+              ],
+              "destinationLines": [
+                5,
+                6
+              ],
+              "tokenCount": 21,
+              "tokenBlockSha256": "dbd354e321447d1e84a3ba77ca522efbd338d703ed436e6b4bd5a34d2d21d0a8"
+            }
+          ]
+        }
+      ],
+      "declarationEvidence": [],
+      "history": {
+        "candidateCommit": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "replayedFrom": "3aa5b4016375fdd6fbffe39a0c05fba4e441773d",
+        "byteIdenticalToPreservedStage2": true,
+        "relevantCommits": [
+          {
+            "commit": "09725a125da64c0eda6c15f46c4aba512dce2119",
+            "subject": "Extract isolated browser filesystem adapter with preserved v1 storage"
+          }
+        ]
+      },
+      "limitations": [
+        "No per-file edit transcript confirms the mapping.",
+        "Documented comparison and extraction intent do not establish copyrightability, ownership or permission.",
+        "New destination AGPL declarations do not cure missing permission for inherited portions."
+      ]
+    },
+    {
+      "id": "SUP-04",
+      "sources": [
+        {
+          "repository": "ZenithResearch/castalia-web",
+          "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "path": "apps/web/src/files/catalog.ts",
+          "sha256": "6ab6273a4e20ad7354fe40312f808c65615c434a9d6ffcaabb18f4be89784a92",
+          "gitBlob": "ffa2679ffd765d7c0b3515625e1d3283252ac1a4"
+        }
+      ],
+      "destination": {
+        "repository": "ZenithResearch/castalia-filesystem",
+        "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "path": "packages/browser/src/database.mjs",
+        "sha256": "9bd01c951857c648bb484cb903d105627b440f1aef05526a7503c76e6d99ca08",
+        "gitBlob": "ecd66f91e292644e752bae427316092582207b55"
+      },
+      "classification": "inferred inherited/mixed origin candidate",
+      "comparisonStatus": "documented",
+      "derivationStatus": "unresolved",
+      "permissionStatus": "unresolved",
+      "confidence": "inferred strong structural lineage",
+      "inference": true,
+      "observations": [
+        "Both openDatabase implementations use database castalia-browser-filesystem, version 2 and catalog store, with the same settled flag and failure path.",
+        "Both abort an upgrade after a prior failure, close a late successful connection, close on versionchange and reject blocked/error events. Destination injects the IDB factory, changes error type and adds a separate atomic helper.",
+        "These paired state transitions support a mixed/adapted opening helper; they do not establish the origin of the additional atomic helper."
+      ],
+      "structuralEvidence": [
+        {
+          "sourcePath": "apps/web/src/files/catalog.ts",
+          "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "sourceSha256": "6ab6273a4e20ad7354fe40312f808c65615c434a9d6ffcaabb18f4be89784a92",
+          "destination": "packages/browser/src/database.mjs",
+          "destinationRevision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+          "destinationSha256": "9bd01c951857c648bb484cb903d105627b440f1aef05526a7503c76e6d99ca08",
+          "method": "lexical unchanged-token blocks after excluding comments/whitespace; generic patterns may match coincidentally, so this is corroboration not a copying/ownership determination",
+          "matchingBlocks": [
+            {
+              "sourceLines": [
+                78,
+                85
+              ],
+              "destinationLines": [
+                15,
+                22
+              ],
+              "tokenCount": 44,
+              "tokenBlockSha256": "327b4e45e0b0dd9eba92b61bbe2f63d4641be1c0912fc99817dd9517a26f294b"
+            },
+            {
+              "sourceLines": [
+                74,
+                78
+              ],
+              "destinationLines": [
+                11,
+                15
+              ],
+              "tokenCount": 21,
+              "tokenBlockSha256": "4de8b95ac7eb0ad9eef505fef1f50bc3de80f46c80869fc17629888a7213513b"
+            }
+          ]
+        }
+      ],
+      "declarationEvidence": [],
+      "history": {
+        "candidateCommit": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "replayedFrom": "3aa5b4016375fdd6fbffe39a0c05fba4e441773d",
+        "byteIdenticalToPreservedStage2": true,
+        "relevantCommits": [
+          {
+            "commit": "779a4a8fc65a2042804f4f4e96740da411797119",
+            "subject": "feat: publish namespace registrations and reviewed mounts atomically"
+          }
+        ]
+      },
+      "limitations": [
+        "No per-file edit transcript confirms the mapping.",
+        "Documented comparison and extraction intent do not establish copyrightability, ownership or permission.",
+        "New destination AGPL declarations do not cure missing permission for inherited portions."
+      ]
+    },
+    {
+      "id": "SUP-05",
+      "sources": [
+        {
+          "repository": "ZenithResearch/castalia-web",
+          "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "path": "apps/web/src/files/filesystem-client.ts",
+          "sha256": "535c1b451552ec69fe782f6678bed250d91a108feccf2021f4cb8ab693c17365",
+          "gitBlob": "4f56e3b5e7d0e2a37ccb70e807f3fbaf1fd2f185"
+        },
+        {
+          "repository": "ZenithResearch/castalia-web",
+          "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "path": "apps/web/src/files/import-zip.ts",
+          "sha256": "ad4ba91b78c8d95819f47029ac5d4f08066817e4095752c16d58fb82b7e7e93c",
+          "gitBlob": "6a50918b09c9ca96247fd34a8be639ab56c934eb"
+        }
+      ],
+      "destination": {
+        "repository": "ZenithResearch/castalia-filesystem",
+        "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "path": "packages/browser/src/index.d.mts",
+        "sha256": "59eef181dc8bc905d66c40c2683c7c4c755a06d6f5ea10e79034f52d71e2d899",
+        "gitBlob": "c5983728151bef498be3c1f56ef6fee7f22a579f"
+      },
+      "classification": "inferred inherited/mixed origin candidate",
+      "comparisonStatus": "documented",
+      "derivationStatus": "unresolved",
+      "permissionStatus": "unresolved",
+      "confidence": "inferred strong declaration lineage",
+      "inference": true,
+      "observations": [
+        "Destination exports aliases FileEntry, FileNode and ZipImportProgress for the new DirectoryEntry, SnapshotNode and FilesystemProgress names, directly preserving old client-facing names.",
+        "SnapshotNode retains FileNode field structure; FilesystemProgress retains all three ZipImportProgress members. Client load/catalog/import/recover/reclaim/read/revise/export/destroy operations retain the surrounding contract with binding/ready additions and widened recovery head.",
+        "Compatibility intent and declarations corroborate lineage; API similarity alone is not a copyrightability or copying determination."
+      ],
+      "structuralEvidence": [],
+      "declarationEvidence": [
+        {
+          "source": {
+            "path": "apps/web/src/files/import-zip.ts",
+            "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+            "symbol": "ZipImportProgress",
+            "start": 42,
+            "end": 46,
+            "sourceSHA256": "ad4ba91b78c8d95819f47029ac5d4f08066817e4095752c16d58fb82b7e7e93c"
+          },
+          "destination": {
+            "path": "packages/browser/src/index.d.mts",
+            "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+            "symbol": "FilesystemProgress",
+            "start": 21,
+            "end": 25,
+            "sourceSHA256": "59eef181dc8bc905d66c40c2683c7c4c755a06d6f5ea10e79034f52d71e2d899"
+          },
+          "sourceCount": 3,
+          "destinationCount": 3,
+          "identicalMembers": 3,
+          "same": true
+        },
+        {
+          "source": {
+            "path": "apps/web/src/files/filesystem-client.ts",
+            "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+            "symbol": "FileEntry",
+            "start": 4,
+            "end": 7,
+            "sourceSHA256": "535c1b451552ec69fe782f6678bed250d91a108feccf2021f4cb8ab693c17365"
+          },
+          "destination": {
+            "path": "packages/browser/src/index.d.mts",
+            "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+            "symbol": "DirectoryEntry",
+            "start": 62,
+            "end": 65,
+            "sourceSHA256": "59eef181dc8bc905d66c40c2683c7c4c755a06d6f5ea10e79034f52d71e2d899"
+          },
+          "sourceCount": 2,
+          "destinationCount": 2,
+          "identicalMembers": 1,
+          "same": false
+        },
+        {
+          "source": {
+            "path": "apps/web/src/files/filesystem-client.ts",
+            "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+            "symbol": "FileNode",
+            "start": 9,
+            "end": 17,
+            "sourceSHA256": "535c1b451552ec69fe782f6678bed250d91a108feccf2021f4cb8ab693c17365"
+          },
+          "destination": {
+            "path": "packages/browser/src/index.d.mts",
+            "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+            "symbol": "SnapshotNode",
+            "start": 66,
+            "end": 74,
+            "sourceSHA256": "59eef181dc8bc905d66c40c2683c7c4c755a06d6f5ea10e79034f52d71e2d899"
+          },
+          "sourceCount": 2,
+          "destinationCount": 2,
+          "identicalMembers": 2,
+          "same": true
+        },
+        {
+          "source": {
+            "path": "apps/web/src/files/filesystem-client.ts",
+            "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+            "symbol": "FilesystemClient",
+            "start": 31,
+            "end": 64,
+            "sourceSHA256": "535c1b451552ec69fe782f6678bed250d91a108feccf2021f4cb8ab693c17365"
+          },
+          "destination": {
+            "path": "packages/browser/src/index.d.mts",
+            "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+            "symbol": "FilesystemClient",
+            "start": 26,
+            "end": 61,
+            "sourceSHA256": "59eef181dc8bc905d66c40c2683c7c4c755a06d6f5ea10e79034f52d71e2d899"
+          },
+          "sourceCount": 13,
+          "destinationCount": 15,
+          "identicalMembers": 8,
+          "same": false
+        }
+      ],
+      "history": {
+        "candidateCommit": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "replayedFrom": "3aa5b4016375fdd6fbffe39a0c05fba4e441773d",
+        "byteIdenticalToPreservedStage2": true,
+        "relevantCommits": [
+          {
+            "commit": "8dbe04e52c946590008a6bd3c9dd913ef79b4e65",
+            "subject": "Retain complete adapter regression coverage and package provenance"
+          },
+          {
+            "commit": "09725a125da64c0eda6c15f46c4aba512dce2119",
+            "subject": "Extract isolated browser filesystem adapter with preserved v1 storage"
+          }
+        ]
+      },
+      "limitations": [
+        "No per-file edit transcript confirms the mapping.",
+        "Documented comparison and extraction intent do not establish copyrightability, ownership or permission.",
+        "New destination AGPL declarations do not cure missing permission for inherited portions."
+      ]
+    },
+    {
+      "id": "SUP-10",
+      "sources": [
+        {
+          "repository": "ZenithResearch/castalia-web",
+          "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "path": "apps/web/src/files/catalog.ts",
+          "sha256": "6ab6273a4e20ad7354fe40312f808c65615c434a9d6ffcaabb18f4be89784a92",
+          "gitBlob": "ffa2679ffd765d7c0b3515625e1d3283252ac1a4"
+        }
+      ],
+      "destination": {
+        "repository": "ZenithResearch/castalia-filesystem",
+        "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "path": "packages/browser/src/registration-store.d.mts",
+        "sha256": "28b9e8b5968f934c40ed631ce4b4b5f86e39a130b4063759f8d87b2beaaf85bf",
+        "gitBlob": "3ddbc71930deac7546ab53d1d4ff8c3344526f17"
+      },
+      "classification": "inferred inherited/mixed origin candidate",
+      "comparisonStatus": "documented",
+      "derivationStatus": "unresolved",
+      "permissionStatus": "unresolved",
+      "confidence": "inferred exact declaration-member lineage",
+      "inference": true,
+      "observations": [
+        "WorkspaceCatalog retains the exact v1 schema discriminator, head, and revisions array with root/committedMs, and destination WorkspaceRow nests that old catalog beneath new address/entity/genesis metadata.",
+        "Preservation of a stored-data contract explains the identity; it supports inherited/mixed review scope but does not make the new registration declarations wholly derived or decide copyrightability."
+      ],
+      "structuralEvidence": [],
+      "declarationEvidence": [
+        {
+          "source": {
+            "path": "apps/web/src/files/catalog.ts",
+            "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+            "symbol": "WorkspaceCatalog",
+            "start": 8,
+            "end": 12,
+            "sourceSHA256": "6ab6273a4e20ad7354fe40312f808c65615c434a9d6ffcaabb18f4be89784a92"
+          },
+          "destination": {
+            "path": "packages/browser/src/registration-store.d.mts",
+            "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+            "symbol": "WorkspaceCatalog",
+            "start": 14,
+            "end": 18,
+            "sourceSHA256": "28b9e8b5968f934c40ed631ce4b4b5f86e39a130b4063759f8d87b2beaaf85bf"
+          },
+          "sourceCount": 3,
+          "destinationCount": 3,
+          "identicalMembers": 3,
+          "same": true
+        }
+      ],
+      "history": {
+        "candidateCommit": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "replayedFrom": "3aa5b4016375fdd6fbffe39a0c05fba4e441773d",
+        "byteIdenticalToPreservedStage2": true,
+        "relevantCommits": [
+          {
+            "commit": "a59d99d506eb27da30bba5b89bb4619199893d54",
+            "subject": "feat: enumerate isolated namespace workspaces with strict bounds"
+          },
+          {
+            "commit": "6c54bc23ace6e4080a3f068287af7b9c3098b0ba",
+            "subject": "feat: reload only explicitly accepted namespace mounts"
+          },
+          {
+            "commit": "779a4a8fc65a2042804f4f4e96740da411797119",
+            "subject": "feat: publish namespace registrations and reviewed mounts atomically"
+          }
+        ]
+      },
+      "limitations": [
+        "No per-file edit transcript confirms the mapping.",
+        "Documented comparison and extraction intent do not establish copyrightability, ownership or permission.",
+        "New destination AGPL declarations do not cure missing permission for inherited portions."
+      ]
+    },
+    {
+      "id": "SUP-15",
+      "sources": [
+        {
+          "repository": "ZenithResearch/castalia-web",
+          "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "path": "apps/web/src/files/filesystem-worker.ts",
+          "sha256": "1182e28a9239863029698b72cc915b0780909c9eba7afcbff8f7092561a9956e",
+          "gitBlob": "8d4baa4b420c18801958298f06d9bd9746a8a06f"
+        }
+      ],
+      "destination": {
+        "repository": "ZenithResearch/castalia-filesystem",
+        "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "path": "packages/browser/src/worker.mjs",
+        "sha256": "e00a3571811253d97d032af197ebb6b0d405684e3d524cc53ae361b31eec1cc5",
+        "gitBlob": "ffdfd115ea41837df8b2ac907c602da96296ed74"
+      },
+      "classification": "inferred inherited/mixed origin candidate",
+      "comparisonStatus": "documented",
+      "derivationStatus": "unresolved",
+      "permissionStatus": "unresolved",
+      "confidence": "inferred partial structural lineage",
+      "inference": true,
+      "observations": [
+        "Both message handlers implement ping, cancel-import via targetId, AbortController tracking, promise success/error envelopes, transferable read buffers and cleanup in finally.",
+        "Destination adds one-time binding/startup checks, validates request IDs, applies controllers more broadly and exposes disposal. This supports partial structural lineage; much of the shared envelope can also follow the preserved protocol."
+      ],
+      "structuralEvidence": [
+        {
+          "sourcePath": "apps/web/src/files/filesystem-worker.ts",
+          "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "sourceSha256": "1182e28a9239863029698b72cc915b0780909c9eba7afcbff8f7092561a9956e",
+          "destination": "packages/browser/src/worker.mjs",
+          "destinationRevision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+          "destinationSha256": "e00a3571811253d97d032af197ebb6b0d405684e3d524cc53ae361b31eec1cc5",
+          "method": "lexical unchanged-token blocks after excluding comments/whitespace; generic patterns may match coincidentally, so this is corroboration not a copying/ownership determination",
+          "matchingBlocks": [
+            {
+              "sourceLines": [
+                432,
+                438
+              ],
+              "destinationLines": [
+                64,
+                67
+              ],
+              "tokenCount": 25,
+              "tokenBlockSha256": "ad299c12495652edfcb6c4ff9a00a8379732a27232a93033bbbae4ec36bc0cee"
+            }
+          ]
+        }
+      ],
+      "declarationEvidence": [],
+      "history": {
+        "candidateCommit": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "replayedFrom": "3aa5b4016375fdd6fbffe39a0c05fba4e441773d",
+        "byteIdenticalToPreservedStage2": true,
+        "relevantCommits": [
+          {
+            "commit": "09725a125da64c0eda6c15f46c4aba512dce2119",
+            "subject": "Extract isolated browser filesystem adapter with preserved v1 storage"
+          }
+        ]
+      },
+      "limitations": [
+        "No per-file edit transcript confirms the mapping.",
+        "Documented comparison and extraction intent do not establish copyrightability, ownership or permission.",
+        "New destination AGPL declarations do not cure missing permission for inherited portions."
+      ]
+    },
+    {
+      "id": "SUP-22",
+      "sources": [
+        {
+          "repository": "ZenithResearch/castalia-web",
+          "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "path": "apps/web/tests/files-local-boundary.test.ts",
+          "sha256": "9fd613887c583922ce4d2d6a6857e1796bd1f682f43e2f837041e6f27c2526bc",
+          "gitBlob": "22c9e4777b33d6f16f560c27545a058f4a1e1bb8"
+        }
+      ],
+      "destination": {
+        "repository": "ZenithResearch/castalia-filesystem",
+        "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "path": "packages/browser/tests/local-boundary.test.mjs",
+        "sha256": "af783f9205d6fa501529df54328a907b17bac461c4f3ecb34e697e47b313a18c",
+        "gitBlob": "d51eb3c7957b92449175f2ce1318c54e62138f9d"
+      },
+      "classification": "inferred inherited/mixed origin candidate",
+      "comparisonStatus": "documented",
+      "derivationStatus": "unresolved",
+      "permissionStatus": "unresolved",
+      "confidence": "inferred partial structural lineage",
+      "inference": true,
+      "observations": [
+        "Both tests use the TypeScript AST to reject dynamic imports, direct/property call egress primitives, and new-expression browser network constructors. They share the same four denied call names and five constructor names.",
+        "Destination converts test framework, combines checks, iterates local mjs files and changes import allowances; source additionally checks remote URL literals. This is partial test-structure correspondence, not a whole-file identity."
+      ],
+      "structuralEvidence": [
+        {
+          "sourcePath": "apps/web/tests/files-local-boundary.test.ts",
+          "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "sourceSha256": "9fd613887c583922ce4d2d6a6857e1796bd1f682f43e2f837041e6f27c2526bc",
+          "destination": "packages/browser/tests/local-boundary.test.mjs",
+          "destinationRevision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+          "destinationSha256": "af783f9205d6fa501529df54328a907b17bac461c4f3ecb34e697e47b313a18c",
+          "method": "lexical unchanged-token blocks after excluding comments/whitespace; generic patterns may match coincidentally, so this is corroboration not a copying/ownership determination",
+          "matchingBlocks": [
+            {
+              "sourceLines": [
+                101,
+                106
+              ],
+              "destinationLines": [
+                35,
+                40
+              ],
+              "tokenCount": 29,
+              "tokenBlockSha256": "60915e2a507241d471ee199108d31ad5e3aaba14bc43cfdb5c01db14f832d722"
+            },
+            {
+              "sourceLines": [
+                97,
+                99
+              ],
+              "destinationLines": [
+                31,
+                33
+              ],
+              "tokenCount": 28,
+              "tokenBlockSha256": "38dd89a22ed66ae36664a7307242e839672d811bc9a210ce7764723e54bf2a1e"
+            },
+            {
+              "sourceLines": [
+                106,
+                110
+              ],
+              "destinationLines": [
+                43,
+                47
+              ],
+              "tokenCount": 21,
+              "tokenBlockSha256": "dfe6293eea194af388f13cada6f2352be91d92e775f315059cc956ee4f320ae1"
+            }
+          ]
+        }
+      ],
+      "declarationEvidence": [],
+      "history": {
+        "candidateCommit": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "replayedFrom": "3aa5b4016375fdd6fbffe39a0c05fba4e441773d",
+        "byteIdenticalToPreservedStage2": true,
+        "relevantCommits": [
+          {
+            "commit": "09725a125da64c0eda6c15f46c4aba512dce2119",
+            "subject": "Extract isolated browser filesystem adapter with preserved v1 storage"
+          }
+        ]
+      },
+      "limitations": [
+        "No per-file edit transcript confirms the mapping.",
+        "Documented comparison and extraction intent do not establish copyrightability, ownership or permission.",
+        "New destination AGPL declarations do not cure missing permission for inherited portions."
+      ]
+    },
+    {
+      "id": "SUP-27",
+      "sources": [
+        {
+          "repository": "ZenithResearch/castalia-web",
+          "revision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "path": "apps/web/tests/filesystem-client.test.ts",
+          "sha256": "a0456fc7dfa9bda081e21b276850a59a9e301292aa6d5e047da957e4a9b06812",
+          "gitBlob": "52dd6f8c5172a36984e5517a780a7a4926d6c1a9"
+        }
+      ],
+      "destination": {
+        "repository": "ZenithResearch/castalia-filesystem",
+        "revision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "path": "packages/browser/tests/worker-client.test.mjs",
+        "sha256": "0492bbfccbc6a6507c513b2decee024a0aad83b49b56296bad57b554f034aa00",
+        "gitBlob": "90af1967f065225de79e58971c76378b17b08279"
+      },
+      "classification": "inferred inherited/mixed origin candidate",
+      "comparisonStatus": "documented",
+      "derivationStatus": "unresolved",
+      "permissionStatus": "unresolved",
+      "confidence": "inferred partial structural lineage",
+      "inference": true,
+      "observations": [
+        "Both tests build an EventTarget-backed fake worker, deliver identical progress values completed=1/total=2/expandedBytes=3, cancel with targetId and simulate the cancelled response.",
+        "Destination combines the source import-progress and expected-damaged-head recovery scenarios after a binding handshake, then asserts immutable binding. Additional destination startup/disposal/database tests have no origin conclusion from this pair."
+      ],
+      "structuralEvidence": [
+        {
+          "sourcePath": "apps/web/tests/filesystem-client.test.ts",
+          "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+          "sourceSha256": "a0456fc7dfa9bda081e21b276850a59a9e301292aa6d5e047da957e4a9b06812",
+          "destination": "packages/browser/tests/worker-client.test.mjs",
+          "destinationRevision": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+          "destinationSha256": "0492bbfccbc6a6507c513b2decee024a0aad83b49b56296bad57b554f034aa00",
+          "method": "lexical unchanged-token blocks after excluding comments/whitespace; generic patterns may match coincidentally, so this is corroboration not a copying/ownership determination",
+          "matchingBlocks": [
+            {
+              "sourceLines": [
+                8,
+                12
+              ],
+              "destinationLines": [
+                99,
+                103
+              ],
+              "tokenCount": 30,
+              "tokenBlockSha256": "789776c38fafe8f8796f3adb4d93a348e5dfdb04e001df341aa73426ff5903f5"
+            },
+            {
+              "sourceLines": [
+                27,
+                31
+              ],
+              "destinationLines": [
+                127,
+                131
+              ],
+              "tokenCount": 24,
+              "tokenBlockSha256": "d78c372e7bd28fd644a145083a1f465d01ed0020959c6be3e3e937ca1f8ec31f"
+            }
+          ]
+        }
+      ],
+      "declarationEvidence": [],
+      "history": {
+        "candidateCommit": "d535c5e79b66c66f7cd04d33544921d5a8c13b09",
+        "replayedFrom": "3aa5b4016375fdd6fbffe39a0c05fba4e441773d",
+        "byteIdenticalToPreservedStage2": true,
+        "relevantCommits": [
+          {
+            "commit": "3aa5b4016375fdd6fbffe39a0c05fba4e441773d",
+            "subject": "Preserve unavailable database errors across worker boundary"
+          },
+          {
+            "commit": "09725a125da64c0eda6c15f46c4aba512dce2119",
+            "subject": "Extract isolated browser filesystem adapter with preserved v1 storage"
+          }
+        ]
+      },
+      "limitations": [
+        "No per-file edit transcript confirms the mapping.",
+        "Documented comparison and extraction intent do not establish copyrightability, ownership or permission.",
+        "New destination AGPL declarations do not cure missing permission for inherited portions."
+      ]
+    }
+  ]
+}

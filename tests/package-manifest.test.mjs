@@ -62,6 +62,7 @@ async function fixture(t, patch = {}) {
     "docs/BROWSER-ADAPTER.md",
     "licenses/zip-js-BSD-3-Clause.txt",
     "provenance/browser-extraction.json",
+    "provenance/browser-supplemental-origins.json",
     "docs/SOURCE-PROVENANCE.md",
     "docs/THIRD-PARTY-NOTICES.md",
     "docs/AGPL-DISTRIBUTION.md",
@@ -111,7 +112,7 @@ async function fixture(t, patch = {}) {
 test("complete package verifies against independent source and digest", async (t) => {
   const f = await fixture(t);
   const manifest = await verifyPackage(f.directory, f.hash, revision);
-  assert.equal(manifest.files.length, 29);
+  assert.equal(manifest.files.length, 30);
 });
 
 test("changed bytes, missing source pin and wrong digest reject", async (t) => {

@@ -177,6 +177,7 @@ export async function verifyPackage(
     "docs/BROWSER-ADAPTER.md",
     "licenses/zip-js-BSD-3-Clause.txt",
     "provenance/browser-extraction.json",
+    "provenance/browser-supplemental-origins.json",
     "web/castalia_filesystem_wasm.js",
     "web/castalia_filesystem_wasm.d.ts",
     "web/castalia_filesystem_wasm_bg.wasm",

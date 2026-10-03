@@ -21,3 +21,5 @@ Remap Cargo, installed rust-src and checkout paths. Canonical macOS arm64 packag
 Preserve unavailable database errors through the worker boundary, make registration retries without a new catalog idempotent, and replace canonical paths atomically while retaining namespace/entity identity. Mark import-only adapter modules as free of initialization side effects so client-only consumers exclude ZIP worker code without increasing their bundle budgets.
 
 2026-10-03: Correct the older AGPL document-copy ancestry, retain existing declarations, and ship exact third-party/standard-library notices with a lock-bound byte inventory. Add distribution-review guidance without asserting new grants or changing runtime code, formats or dependency locks.
+
+2026-10-03: Add seven explicitly inferred supplemental Web origin mappings with exact preserved hashes; distinguish policy acceptance from missing Web/Wallet permissions. Runtime modules, signing bytes, storage/recovery formats and dependency locks remain unchanged.
