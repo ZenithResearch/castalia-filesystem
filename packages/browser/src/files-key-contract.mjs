@@ -79,7 +79,7 @@ function challenge(value, kind, serviceId) {
 export function parseFilesBody(operation, value) {
     if (operation === 'wrap') {
         exact(value, ['binding', 'key']);
-        filesDecodeKey(value.key);
+        filesDecodeKey(value.key).fill(0);
         return Object.freeze({ binding: parseFilesKeyBinding(value.binding), key: value.key });
     }
     if (operation === 'unwrap') {
