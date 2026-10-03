@@ -306,7 +306,6 @@ export class FilesIndex {
       row.genesis !== canonical.registrationGenesisDigest
     )
       return false;
-    if (row.controller === owner) return true;
     const grant = this.db
       .prepare("SELECT * FROM grants WHERE namespace_id=? AND grantee=?")
       .get(row.id, owner);

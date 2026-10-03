@@ -267,6 +267,18 @@ test("organization admission requires the exact accepted canonical binding at in
   });
   f.index.canonicalBindings[0].registrationGenesisDigest =
     accepted.receipt.payload.registrationGenesisDigest;
+  assert.equal(f.index.destinations(owner).zenith.canSubmit, false);
+  assert.throws(() => intent(f, manifest), {
+    code: "namespace-admission-denied",
+  });
+  f.index.setGrant(owner, {
+    namespaceId: manifest.namespaceId,
+    granteeMemberKey: owner,
+    workspaceId: manifest.initialWorkspaceId,
+    actions: ["submit"],
+    maxBytes: 100,
+    expiresAt: "2026-10-04T00:00:00.000Z",
+  });
   assert.equal(f.index.destinations(owner).zenith.canSubmit, true);
   const shipment = intent(f, manifest),
     receipt = await stored(f, shipment);
@@ -280,4 +292,57 @@ test("organization admission requires the exact accepted canonical binding at in
       .payload.ownerMemberKey,
     owner,
   );
+});
+
+test("an organization controller needs an explicit bounded self-grant for uploads", async (t) => {
+  const f = fixture(t),
+    { manifest, accepted } = await register(f, true);
+  f.index.canonicalBindings = [
+    {
+      alias: "zenith",
+      namespaceId: manifest.namespaceId,
+      registrationGenesisDigest:
+        accepted.receipt.payload.registrationGenesisDigest,
+    },
+  ];
+  assert.equal(f.index.namespaces(owner).length, 0);
+  assert.throws(() => intent(f, manifest), {
+    code: "namespace-admission-denied",
+  });
+  f.index.setGrant(owner, {
+    namespaceId: manifest.namespaceId,
+    granteeMemberKey: owner,
+    workspaceId: manifest.initialWorkspaceId,
+    actions: ["submit"],
+    maxBytes: 32,
+    expiresAt: "2026-10-04T00:00:00.000Z",
+  });
+  assert.equal(f.index.namespaces(owner).length, 1);
+  assert.throws(() => intent(f, manifest, { bytes: Buffer.alloc(33) }), {
+    code: "namespace-admission-denied",
+  });
+  const shipment = intent(f, manifest),
+    receipt = await stored(f, shipment);
+  f.index.commit(owner, commitInput(shipment, receipt));
+  assert.throws(
+    () =>
+      intent(f, manifest, {
+        operationId: id(25),
+        revisionId: id(26),
+        expectedRevisionId: id(3),
+      }),
+    { code: "namespace-admission-denied" },
+  );
+  f.advance(86400000);
+  assert.equal(f.index.namespaces(owner).length, 0);
+  assert.throws(
+    () =>
+      intent(f, manifest, {
+        operationId: id(27),
+        submissionId: id(28),
+        revisionId: id(29),
+      }),
+    { code: "namespace-admission-denied" },
+  );
+  assert.equal(f.index.history(owner, id(2)).revisions.length, 1);
 });
