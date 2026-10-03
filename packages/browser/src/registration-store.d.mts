@@ -86,3 +86,7 @@ export function resolveMount(
   reviewedIndex: ReviewedManifestIndex,
   options: { trustPolicy: BaseMembershipTrustPolicyV1 },
 ): Promise<AcceptedMount | null>;
+/** Local explicit acceptance, not independently authenticated registry-operator policy. */
+export function loadLocalReviewedIndex(
+  db: IDBDatabase,
+): Promise<ReviewedManifestIndex>;

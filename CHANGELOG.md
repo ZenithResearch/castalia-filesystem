@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Make identical registration publication idempotent without resetting catalogs, and expose bounded reload/resolution of explicitly accepted mount records for browser workers. Retain separate authoritative application pins for canonical organizations.
+
 Add a wallet-neutral namespace registration transcript, existing-v3 membership verifier, controller chain and atomic local registry/mount publication. Keep canonical alias approval explicit and fence stale verification results with transaction-time head comparisons; preserve the legacy database and snapshot formats.
 
 Record the reviewed identity sources and unresolved universe/federation mapping before adding the shared browser registration contract. Keep controller authorization, canonical mount approval and storage partitioning separate so the adapter does not manufacture authority or migrate legacy data.

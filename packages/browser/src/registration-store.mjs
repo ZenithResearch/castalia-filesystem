@@ -494,3 +494,61 @@ export async function resolveMount(
   );
   return mounts[0] ?? null;
 }
+
+/** Reload explicit local acceptance records only; never infer review from proposals. */
+export async function loadLocalReviewedIndex(db) {
+  return atomic(db, "readonly", (store, done, abort) => {
+    const request = store.openCursor();
+    const entries = [];
+    let scanned = 0;
+    const finish = () =>
+      done(parseReviewedManifestIndex({ schema: INDEX, entries }));
+    request.addEventListener("success", () => {
+      try {
+        const cursor = request.result;
+        if (!cursor) {
+          finish();
+          return;
+        }
+        if (++scanned > 8192)
+          throw new RegistrationError(
+            "limit",
+            "Accepted mount scan limit exceeded",
+          );
+        const key = cursor.key;
+        if (Array.isArray(key) && typeof key[0] === "string") {
+          // Compound keys sort by their first component; stop past this prefix.
+          if (key[0] > "canonical-mount-v1") {
+            finish();
+            return;
+          }
+          if (key[0] === "canonical-mount-v1") {
+            if (key.length !== 2 || typeof key[1] !== "string")
+              throw new RegistrationError(
+                "invalid",
+                "Invalid stored mount key",
+              );
+            const entry = parseReviewedManifestIndex({
+              schema: INDEX,
+              entries: [cursor.value],
+            }).entries[0];
+            if (entry.canonicalPath !== key[1])
+              throw new RegistrationError(
+                "invalid",
+                "Stored mount path mismatch",
+              );
+            if (entries.length >= 4096)
+              throw new RegistrationError(
+                "limit",
+                "Accepted mount count exceeded",
+              );
+            entries.push(entry);
+          }
+        }
+        cursor.continue();
+      } catch (error) {
+        abort(error);
+      }
+    });
+  });
+}

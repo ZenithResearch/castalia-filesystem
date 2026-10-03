@@ -14,6 +14,7 @@ import {
   publishAcceptedRegistration,
   listAcceptedMounts,
   resolveMount,
+  loadLocalReviewedIndex,
 } from "../src/registration-store.mjs";
 import { PERSON_CLASS } from "../src/registration.mjs";
 import {
@@ -366,6 +367,29 @@ test("identical publication is idempotent and never resets an advanced catalog",
       null,
     );
     assert.deepEqual((await read(db, key)).catalog, advanced);
+  } finally {
+    db.close();
+  }
+});
+
+test("reload index contains explicit acceptance only and rejects corrupted mount records", async () => {
+  const { db, registration: r } = await setup();
+  try {
+    await publishRegistration(db, r, { catalog });
+    assert.deepEqual((await loadLocalReviewedIndex(db)).entries, []);
+    await acceptReviewedManifest(db, r, index(r));
+    const persisted = await loadLocalReviewedIndex(db);
+    assert.deepEqual(persisted, index(r));
+    assert.equal(
+      (await listAcceptedMounts(db, persisted, { trustPolicy })).length,
+      1,
+    );
+    await write(db, ["canonical-mount-v1", "/Organization/Example/"], {
+      ...index(r).entries[0],
+      extra: "unknown",
+    });
+    await assert.rejects(loadLocalReviewedIndex(db));
+    await assert.rejects(listAcceptedMounts(db, index(r), { trustPolicy }));
   } finally {
     db.close();
   }
