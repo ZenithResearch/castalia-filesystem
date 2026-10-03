@@ -60,35 +60,35 @@ For organizations, current controllers may issue only `submit`, `update-own` and
 
 All endpoints require an exact allowed `Origin`. Except config and Auth bootstrap, they also require `Authorization: Bearer <session>`.
 
-| Common | Body / response |
-| --- | --- |
-| GET `/v1/config` | Pinned service identity; gateway also exposes public account/provider metadata |
-| POST `/v1/auth/challenge` | `{memberKey}` → existing Auth challenge |
-| POST `/v1/auth/session` | `{presentation}` → `{token,memberKey,expiresAt}` |
-| DELETE `/v1/auth/session` | Revoke current bearer |
+| Common                    | Body / response                                                                |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| GET `/v1/config`          | Pinned service identity; gateway also exposes public account/provider metadata |
+| POST `/v1/auth/challenge` | `{memberKey}` → existing Auth challenge                                        |
+| POST `/v1/auth/session`   | `{presentation}` → `{token,memberKey,expiresAt}`                               |
+| DELETE `/v1/auth/session` | Revoke current bearer                                                          |
 
-| Index | Body / response |
-| --- | --- |
-| GET `/v1/namespaces/personal`, `/v1/namespaces` | Registration chain/credential and signed namespace acceptance |
-| GET `/v1/destinations` | Personal plus explicit pending/registered Zenith binding |
-| POST `/v1/registrations/accept` | `{chain,membershipCredential,expectedManifestDigest}` |
-| GET/PUT `/v1/connections` | Owner's public gateway descriptors only |
-| POST `/v1/upload-intents` | `{operationId,binding,expectedRevisionId,ciphertextSha256,byteLength,gatewayId}` |
-| POST `/v1/submissions/commit` | `{operationId,storageReceipt,descriptorDigest,keyEnvelope,nonce}` |
-| GET `/v1/operations/:operationId` | Intent and nullable accepted receipt |
-| GET `/v1/submissions` | Owner's heads, recovery metadata and tombstone state |
-| GET `/v1/submissions/:id/history` | Owner's immutable revisions |
-| GET `/v1/submissions/:id/revisions/:revisionId` | One owner's revision, wrapped key, nonce and receipts |
-| POST `/v1/submissions/:id/withdraw` | `{expectedRevisionId}` |
-| POST `/v1/grants`, `/v1/grants/revoke` | Current controller only |
+| Index                                           | Body / response                                                                  |
+| ----------------------------------------------- | -------------------------------------------------------------------------------- |
+| GET `/v1/namespaces/personal`, `/v1/namespaces` | Registration chain/credential and signed namespace acceptance                    |
+| GET `/v1/destinations`                          | Personal plus explicit pending/registered Zenith binding                         |
+| POST `/v1/registrations/accept`                 | `{chain,membershipCredential,expectedManifestDigest}`                            |
+| GET/PUT `/v1/connections`                       | Owner's public gateway descriptors only                                          |
+| POST `/v1/upload-intents`                       | `{operationId,binding,expectedRevisionId,ciphertextSha256,byteLength,gatewayId}` |
+| POST `/v1/submissions/commit`                   | `{operationId,storageReceipt,descriptorDigest,keyEnvelope,nonce}`                |
+| GET `/v1/operations/:operationId`               | Intent and nullable accepted receipt                                             |
+| GET `/v1/submissions`                           | Owner's heads, recovery metadata and tombstone state                             |
+| GET `/v1/submissions/:id/history`               | Owner's immutable revisions                                                      |
+| GET `/v1/submissions/:id/revisions/:revisionId` | One owner's revision, wrapped key, nonce and receipts                            |
+| POST `/v1/submissions/:id/withdraw`             | `{expectedRevisionId}`                                                           |
+| POST `/v1/grants`, `/v1/grants/revoke`          | Current controller only                                                          |
 
-| Gateway | Body / response |
-| --- | --- |
-| POST `/v1/uploads` | `{intent}` signed by a pinned index |
-| GET `/v1/uploads/:operationId` | Durable part journal and nullable storage receipt |
-| PUT `/v1/uploads/:operationId/parts/:number` | Raw ciphertext, 8 MiB except final part |
-| POST `/v1/uploads/:operationId/complete` | `{}` → verified storage receipt |
-| GET `/v1/objects/:operationId` | Fresh immutable-version ciphertext, uploader only |
+| Gateway                                      | Body / response                                   |
+| -------------------------------------------- | ------------------------------------------------- |
+| POST `/v1/uploads`                           | `{intent}` signed by a pinned index               |
+| GET `/v1/uploads/:operationId`               | Durable part journal and nullable storage receipt |
+| PUT `/v1/uploads/:operationId/parts/:number` | Raw ciphertext, 8 MiB except final part           |
+| POST `/v1/uploads/:operationId/complete`     | `{}` → verified storage receipt                   |
+| GET `/v1/objects/:operationId`               | Fresh immutable-version ciphertext, uploader only |
 
 No endpoint proxies a caller-supplied S3 URL. HTTP errors expose stable error codes, not credentials or internal exception strings. Content filenames and recovery secrets must never appear in logs.
 
@@ -111,7 +111,6 @@ Build a complete, separate source operator package using `node services/scripts/
 
 The grants endpoint returns an index-signed `castalia.files-admission-grant.v1` acceptance that binds the current registration digest, genesis, controller, grantee, workspace, actions, bytes and expiry. It attests a controller-authenticated request accepted by this index. It is **not** a transferable wallet-signed capability and gives no forward delegation. A future organization grant UI must require an explicit controller action; Phase 1 exposes no grant form. Neither an Auth login nor this record reveals a decryption key.
 
-
 Both Web and Zenith deployments must preconfigure the same trusted gateway origin and key in their explicit `connect-src`/Files configuration. Authenticated index discovery restores an owner's account/allowance metadata only within that configured endpoint. An index URL/key alone is a pending setup, not authority to contact arbitrary discovered URLs. This first release does not add a portable connection-attestation protocol.
 
 The full-source service test run includes `browser-shipping.test.mjs`, which uses the existing root `fake-indexeddb` development dependency and the actual shared coordinator with a controlled worker/provider. Run root `npm ci --ignore-scripts --no-audit --no-fund` first for that integration test. The separate operator package excludes this browser integration test (recorded explicitly in its manifest); all dependency-free server tests run again from packaged files. Existing source-permission and release qualification boundaries still apply to the reused registration verifier; packaging does not grant new rights.
@@ -119,3 +118,5 @@ The full-source service test run includes `browser-shipping.test.mjs`, which use
 `backupDatabase(db, newPrivatePath)` uses SQLite's transaction-consistent online backup API, creates its output privately without overwriting an existing file, and syncs the file and parent directory. Restore only a completed snapshot into a private directory; do not copy a live main SQLite file without its WAL. Keep the index and gateway snapshots plus separately protected service signing keys and s3d recovery/database material. The index snapshot preserves accepted heads/receipts; the gateway snapshot preserves upload/version journals. Wallet recovery restores decryption keys separately.
 
 Production gateway configuration also requires `ownershipDirectory`: one private durable directory shared by every permitted gateway invocation for that operator. A lock is derived from the fixed S3 endpoint and bucket, independent of the gateway DB path/key/account label. Exclusive creation fails a second process before its service starts. Clean shutdown releases only the current process's own lock; a crash leaves a stale lock that requires explicit operator recovery after confirming the old process is stopped. Never delete an active lock or configure different ownership directories for the same S3 connection. Only this single gateway process may write to that dedicated s3d account/bucket; parallel hosts/admin writers are unsupported and must be prevented operationally. Within the process, gateway mutations are serialized; quota reservation and upload-intent insertion additionally use one SQLite transaction with no network await inside it.
+
+The first shipping release admits only the member’s own accepted personal namespace and the exact Organization namespace/genesis configured as canonical `zenith`. The same gate applies to destination discovery, new upload intents and final acceptance; an Organization display name never activates it. Generic organization destinations remain deferred. Removing the canonical binding blocks new acceptance while uploader recovery and withdrawal remain available.

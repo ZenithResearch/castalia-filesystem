@@ -201,7 +201,12 @@ export class FilesIndex {
             state: "registered",
             namespaceId: row.id,
             registrationGenesisDigest: row.genesis,
-            canSubmit: this.canAdmit(owner, row, null, 0),
+            canSubmit: this.canAdmit(
+              owner,
+              row,
+              JSON.parse(row.value).manifest.initialWorkspaceId,
+              0,
+            ),
           }
         : {
             state: "pending",
@@ -294,6 +299,13 @@ export class FilesIndex {
   canAdmit(owner, row, workspace, bytes, action = "submit") {
     if (row.kind === "person")
       return row.creator === owner && row.controller === owner;
+    const canonical = this.canonicalBindings.find((v) => v.alias === "zenith");
+    if (
+      !canonical ||
+      row.id !== canonical.namespaceId ||
+      row.genesis !== canonical.registrationGenesisDigest
+    )
+      return false;
     if (row.controller === owner) return true;
     const grant = this.db
       .prepare("SELECT * FROM grants WHERE namespace_id=? AND grantee=?")

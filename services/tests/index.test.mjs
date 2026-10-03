@@ -103,7 +103,15 @@ test("two valid competing revisions may store, but one CAS wins and losing recei
 });
 test("revocation between storage and index acceptance denies publication but preserves uploader read and withdrawal", async (t) => {
   const f = fixture(t),
-    { manifest } = await register(f, true);
+    { manifest, accepted } = await register(f, true);
+  f.index.canonicalBindings = [
+    {
+      alias: "zenith",
+      namespaceId: manifest.namespaceId,
+      registrationGenesisDigest:
+        accepted.receipt.payload.registrationGenesisDigest,
+    },
+  ];
   f.index.setGrant(owner, {
     namespaceId: manifest.namespaceId,
     granteeMemberKey: other,
@@ -236,5 +244,40 @@ test("admission grant is an index-signed current-controller acceptance and canno
   assert.throws(
     () => f.index.setGrant(owner, { ...grant, actions: ["delegate"] }),
     { code: "invalid-grant" },
+  );
+});
+
+test("organization admission requires the exact accepted canonical binding at intent and commit", async (t) => {
+  const f = fixture(t),
+    { manifest, accepted } = await register(f, true);
+  assert.equal(f.index.namespaces(owner).length, 0);
+  assert.throws(() => intent(f, manifest), {
+    code: "namespace-admission-denied",
+  });
+  f.index.canonicalBindings = [
+    {
+      alias: "zenith",
+      namespaceId: manifest.namespaceId,
+      registrationGenesisDigest: id(987),
+    },
+  ];
+  assert.equal(f.index.destinations(owner).zenith.state, "pending");
+  assert.throws(() => intent(f, manifest), {
+    code: "namespace-admission-denied",
+  });
+  f.index.canonicalBindings[0].registrationGenesisDigest =
+    accepted.receipt.payload.registrationGenesisDigest;
+  assert.equal(f.index.destinations(owner).zenith.canSubmit, true);
+  const shipment = intent(f, manifest),
+    receipt = await stored(f, shipment);
+  f.index.canonicalBindings = [];
+  assert.throws(() => f.index.commit(owner, commitInput(shipment, receipt)), {
+    code: "namespace-admission-denied",
+  });
+  assert.equal(f.index.inventory(owner).length, 0);
+  assert.equal(
+    (await f.gateway.download(owner, shipment.input.operationId)).receipt
+      .payload.ownerMemberKey,
+    owner,
   );
 });
