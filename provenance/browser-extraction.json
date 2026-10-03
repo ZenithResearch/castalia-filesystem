@@ -50,5 +50,6 @@
       "sourceSha256": "535c1b451552ec69fe782f6678bed250d91a108feccf2021f4cb8ab693c17365",
       "destination": "packages/browser/src/filesystem-client.mjs"
     }
-  ]
+  ],
+  "coverageNote": "These nine declared module mappings are not exhaustive. Seven additional inferred-origin review candidates, including source-only tests, are recorded separately in browser-supplemental-origins.json; comparison evidence is not a grant or ownership determination."
 }

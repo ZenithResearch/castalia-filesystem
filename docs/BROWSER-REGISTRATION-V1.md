@@ -63,4 +63,4 @@ A live registry, signed operator-index distribution and external existing-entity
 
 The checked-in synthetic vector freezes manifest bytes, derived IDs and digest. The existing v3 membership fixture freezes its prior framed transcript and signature. Node tests cover valid rotation, wrong signer, malformed IDs, unknown fields, consent deadline/origin/body binding, duplicate roots, atomic abort/quota failures, stale-head publication, alias collision and legacy-key preservation. These unit tests do not replace actual browser acceptance, consumer bundling, or production qualification.
 
-AGPL attribution and the existing Web license-policy blocker remain as recorded in the identity mapping. No policy waiver or registry publication is implied by a passing source test.
+AGPL attribution and unresolved inherited-source permission questions remain as recorded in the identity mapping. Consumer policy acceptance is separate; a passing source test creates no permission grant or registry publication.

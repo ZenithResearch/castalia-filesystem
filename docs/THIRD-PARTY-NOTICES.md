@@ -38,3 +38,5 @@ All crate notice texts are in `licenses/cargo-runtime-notices.txt`. The exact co
 Binding generation remains wasm-bindgen 0.2.127 with its locked walrus 0.26.4. The complete build manifest retains the exact Rust commit/tool versions and preserved WASM producers. The notice index does not claim a per-symbol source map or resolve source ownership.
 
 Missing permission evidence for inherited browser/Wallet material, where present in a later adapter candidate, remains separate from these cached third-party declarations.
+
+The Stage 2 browser adapter additionally imports the exact `@zip.js/zip.js` 2.18.2 native-compression entry. Its BSD-3-Clause notice is retained in `licenses/zip-js-BSD-3-Clause.txt`, and its version/integrity are fixed in package metadata and the unchanged npm lock. ZIP dependency files are resolved by the consumer; they are not copied into this source package or into the Wallet registration entry. Existing Web-derived runtime and test origin evidence is separate from this ZIP notice.

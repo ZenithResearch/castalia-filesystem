@@ -34,6 +34,6 @@ The legacy mount remains visible. Copying legacy files to a selected new workspa
 
 ## Qualification and licensing
 
-The maintained core and new registration modules retain AGPL-3.0-or-later. Browser adapter provenance must identify its Web source without inventing an absent permissive license. The current Castalia Web dependency policy rejects AGPL: consumer candidates remain draft until this real licensing/policy gate is resolved. No inventory exclusions, policy waivers or attribution changes are part of this extraction.
+The maintained core and registration modules retain their AGPL-3.0-or-later declarations. Browser adapter provenance identifies the Web source and supplemental inferred origins without inventing an absent permissive grant. Exact consumer policy acceptance is assessed separately from unresolved Web/Wallet source permissions. An allowed dependency declaration or matching artifact does not establish those permissions; no grant, inventory exclusion or relicensing is created by this extraction.
 
 Source, unit and browser acceptance evidence are separate gates. Registration tests must cover signature/body binding, v3 eligibility, controller updates, duplicate organization roots, namespace and workspace isolation, unknown schemas, transaction aborts and concurrent publication. Browser tests must additionally cover real IndexedDB completion/abort and scoped worker/recovery/cleanup behavior.
