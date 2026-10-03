@@ -15,6 +15,7 @@ import {
   listAcceptedMounts,
   resolveMount,
   loadLocalReviewedIndex,
+  listWorkspaceRows,
 } from "../src/registration-store.mjs";
 import { PERSON_CLASS } from "../src/registration.mjs";
 import {
@@ -390,6 +391,39 @@ test("reload index contains explicit acceptance only and rejects corrupted mount
     });
     await assert.rejects(loadLocalReviewedIndex(db));
     await assert.rejects(listAcceptedMounts(db, index(r), { trustPolicy }));
+  } finally {
+    db.close();
+  }
+});
+
+test("workspace enumeration isolates namespaces and checks immutable row bindings", async () => {
+  const { db, registration: r } = await setup();
+  try {
+    await write(db, "workspace", catalog);
+    await publishRegistration(db, r, { catalog });
+    await publishWorkspace(db, {
+      registration: r,
+      workspaceId: "55".repeat(32),
+      catalog,
+    });
+    const other = await verified([
+      signed(await genesis({ genesisNonce: "77".repeat(32) })),
+    ]);
+    await publishRegistration(db, other, { catalog });
+    const rows = await listWorkspaceRows(db, binding(r));
+    assert.equal(rows.length, 2);
+    assert.ok(
+      rows.every((row) => row.address.namespaceId === r.manifest.namespaceId),
+    );
+    await assert.rejects(
+      listWorkspaceRows(db, {
+        ...binding(r),
+        entityRef: other.manifest.entityRef,
+      }),
+    );
+    const key = workspaceKey(rows[0].address);
+    await write(db, key, { ...rows[0], schema: "future.v2" });
+    await assert.rejects(listWorkspaceRows(db, binding(r)));
   } finally {
     db.close();
   }

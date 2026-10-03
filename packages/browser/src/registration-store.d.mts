@@ -90,3 +90,7 @@ export function resolveMount(
 export function loadLocalReviewedIndex(
   db: IDBDatabase,
 ): Promise<ReviewedManifestIndex>;
+export function listWorkspaceRows(
+  db: IDBDatabase,
+  binding: NamespaceBinding,
+): Promise<WorkspaceRow[]>;

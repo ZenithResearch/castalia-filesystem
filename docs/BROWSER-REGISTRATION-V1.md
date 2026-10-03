@@ -43,6 +43,8 @@ The database remains `castalia-browser-filesystem`, version 2, store `catalog`. 
 
 `verifyRegistrationChain` returns an opaque in-process verification token. `publishRegistration` accepts that token and an initial catalog for genesis. It writes all new records in one transaction, resolves only on transaction completion, and rejects a differing existing entity, namespace or initial workspace. An identical signed submission is idempotent and never resets a workspace catalog. Updates compare the preceding digest, genesis and revision count inside the same transaction; they cannot replace a workspace catalog. A failed write or abort publishes none of the records. Cryptographic verification occurs before the transaction; compare-and-swap catches changes during that work.
 
+`listWorkspaceRows` enumerates at most 1024 strict child rows for one exact namespace/entity/genesis binding, without a legacy fallback.
+
 `publishWorkspace` creates only a child workspace of the token's already registered namespace and compares the full current registration digest inside its transaction. It rejects an existing workspace and preserves entity/genesis bindings. Ordinary local catalog/head writes retain existing snapshot validation and per-workspace locking; there is no new signed file-head protocol or remote authorization claim.
 
 `publishAcceptedRegistration` requires the explicit reviewed index, while `publishRegistration` without it stores only a local proposal. `listAcceptedMounts` and `resolveMount` return only exact configured paths that have been locally accepted and whose stored chain verifies; missing canonical mappings return no mount, never a name-based fallback.

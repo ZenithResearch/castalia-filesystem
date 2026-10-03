@@ -552,3 +552,57 @@ export async function loadLocalReviewedIndex(db) {
     });
   });
 }
+
+/** Enumerate bounded child workspaces of one accepted entity/genesis binding. */
+export async function listWorkspaceRows(db, binding) {
+  exact(
+    binding,
+    ["namespaceId", "entityRef", "registrationGenesisDigest"],
+    "namespace binding",
+  );
+  hex32(binding.namespaceId);
+  entityKey(binding.entityRef);
+  hex32(binding.registrationGenesisDigest);
+  return atomic(db, "readonly", (store, done, abort) => {
+    const request = store.openCursor();
+    const rows = [];
+    let scanned = 0;
+    request.addEventListener("success", () => {
+      try {
+        const cursor = request.result;
+        if (!cursor) {
+          done(rows);
+          return;
+        }
+        if (++scanned > 8192)
+          throw new RegistrationError("limit", "Workspace scan limit exceeded");
+        const key = cursor.key;
+        if (
+          Array.isArray(key) &&
+          key[0] === "workspace-v1" &&
+          key[1] === binding.namespaceId
+        ) {
+          if (key.length !== 3)
+            throw new RegistrationError("invalid", "Invalid workspace key");
+          const row = parseWorkspaceRow(cursor.value);
+          if (
+            row.address.namespaceId !== binding.namespaceId ||
+            row.address.workspaceId !== key[2] ||
+            row.entityRef !== binding.entityRef ||
+            row.registrationGenesisDigest !== binding.registrationGenesisDigest
+          )
+            throw new RegistrationError(
+              "invalid",
+              "Workspace binding mismatch",
+            );
+          if (rows.length >= 1024)
+            throw new RegistrationError("limit", "Workspace count exceeded");
+          rows.push(row);
+        }
+        cursor.continue();
+      } catch (error) {
+        abort(error);
+      }
+    });
+  });
+}
