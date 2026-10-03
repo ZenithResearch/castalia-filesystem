@@ -1,0 +1,14 @@
+{
+  "name": "castalia-filesystem-build-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.18.0"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "verify:extraction": "node scripts/verify-extraction.mjs",
+    "build:package": "node scripts/build-package.mjs"
+  }
+}

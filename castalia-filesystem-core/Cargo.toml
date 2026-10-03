@@ -1,0 +1,35 @@
+[package]
+name = "castalia-filesystem-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Portable immutable directory snapshots and verified reads for Castalia"
+
+[features]
+default = []
+fuse = ["dep:fuser", "dep:libc"]
+# Driver-free compile/callback testing on macOS. NEVER a runnable mount build.
+fuse-check = ["fuse", "fuser/macos-no-mount"]
+
+[dependencies]
+blake3 = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[target.'cfg(all(unix, not(target_arch = "wasm32")))'.dependencies]
+rustix = { version = "1", features = ["fs", "process"] }
+clap = { version = "4", features = ["derive"] }
+futures = "0.3"
+fuser = { version = "=0.18.0", default-features = false, optional = true }
+libc = { version = "0.2", optional = true }
+
+[target.'cfg(all(unix, not(target_arch = "wasm32")))'.dev-dependencies]
+tempfile = "3"
+
+[dev-dependencies]
+futures = "0.3"
+
+[lints]
+workspace = true
