@@ -1,0 +1,16 @@
+{
+  "provenance": "Existing public RFC8032 test keys; Wallet 52ee41ad03af8f256601c1c21c33e55d876a5380 docs/vectors/castalia-zenith-membership-v3.vector.json. Fixture only, never an implicit trust root.",
+  "credential": {
+    "schema": "castalia.zenith-membership-credential.v3",
+    "version": 3,
+    "membershipId": "b2409aad97015e17749442377f14acd6ccd9ce804661738e4aa7e860d554d8a9",
+    "ownerPublicKey": "3d4017c3e843895a92b70aa74d1b7ebc9c982ccf2ec4968cc0cd55f12af4660c",
+    "status": "active",
+    "issuerId": "zenith-research",
+    "issuerKeyId": "zenith-membership-issuer-fixture-ed25519-1",
+    "signatureSuite": "Ed25519",
+    "issuerSignature": "b4Sf_uSYTxfhQUaF_Arq44IxYNByxKsrUOgmXCB4dEYbfAlJ6to50ZeY_qBbvZYibHO6A4JrIERZ1DBDxSkRBA"
+  },
+  "issuerPublicKey": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+  "credentialHex": "63617374616c69612f7a656e6974682d6d656d626572736869702d63726564656e7469616c2f7633000300000000000000b2409aad97015e17749442377f14acd6ccd9ce804661738e4aa7e860d554d8a93d4017c3e843895a92b70aa74d1b7ebc9c982ccf2ec4968cc0cd55f12af4660c060000006163746976650f0000007a656e6974682d72657365617263682a0000007a656e6974682d6d656d626572736869702d6973737565722d666978747572652d656432353531392d310700000065643235353139"
+}

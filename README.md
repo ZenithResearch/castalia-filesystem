@@ -32,3 +32,9 @@ Builds and CI do not publish packages, merge branches or deploy applications. A 
 ## License
 
 AGPL-3.0-or-later. See [LICENSE](LICENSE) and the retained historical attribution in [source provenance](docs/SOURCE-PROVENANCE.md). See the [third-party notices](docs/THIRD-PARTY-NOTICES.md) and [distribution review](docs/AGPL-DISTRIBUTION.md); package verification does not establish clearance.
+
+## Browser registration candidate
+
+The Stage2 branch adds a local signed-manifest registration contract and scoped browser adapter under `packages/browser`. This is not a live organization registry or remote file-access service. The existing Member Key signs namespace registration; one organization root can contain multiple isolated child workspaces. Canonical mount approval comes from an explicitly reviewed index, separately from a member's local proposal.
+
+Read [identity mapping](docs/IDENTITY-MAPPING.md) and the [registration contract](docs/BROWSER-REGISTRATION-V1.md) for public APIs, source evidence, unresolved universe/federation records, compatibility boundaries and unresolved inherited-source permission questions. Consumer policy acceptance does not settle those questions. Existing legacy Files data and snapshot v1 bytes remain unchanged.
