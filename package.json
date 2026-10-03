@@ -1,5 +1,5 @@
 {
-  "name": "castalia-filesystem-build-tools",
+  "name": "@castalia/filesystem",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,8 +7,22 @@
     "node": "24.18.0"
   },
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs packages/browser/tests/*.test.mjs",
     "verify:extraction": "node scripts/verify-extraction.mjs",
     "build:package": "node scripts/build-package.mjs"
+  },
+  "license": "AGPL-3.0-or-later",
+  "packageManager": "npm@11.16.0",
+  "exports": {
+    "./registration": {
+      "types": "./packages/browser/src/registration.d.mts",
+      "default": "./packages/browser/src/registration.mjs"
+    }
+  },
+  "dependencies": {
+    "@zip.js/zip.js": "2.18.2"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "6.2.5"
   }
 }
