@@ -47,12 +47,10 @@
   },
   "files": [
     "packages/browser/src",
-    "docs/IDENTITY-MAPPING.md",
-    "docs/BROWSER-REGISTRATION-V1.md",
-    "docs/BROWSER-ADAPTER.md",
-    "provenance/browser-extraction.json",
+    "docs",
+    "provenance",
+    "licenses",
     "README.md",
-    "LICENSE",
-    "licenses"
+    "LICENSE"
   ]
 }

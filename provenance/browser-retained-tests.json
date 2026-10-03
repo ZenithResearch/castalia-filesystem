@@ -26,6 +26,16 @@
       "sourcePath": "apps/web/tests/files-catalog.test.ts",
       "sourceSha256": "c65a0e064191fbf19928283ef660eba4f6687b155de8439c8ad387c5fb16785e",
       "destination": "packages/browser/retained-tests/files-catalog.test.mjs"
+    },
+    {
+      "sourcePath": "apps/web/tests/operation-object-cache.test.ts",
+      "sourceSha256": "59a37a86d0179697ebf7fbfe7da03bf7d3e43729264885ba5582dd8bae335aac",
+      "destination": "packages/browser/retained-tests/operation-object-cache.test.mjs"
+    },
+    {
+      "sourcePath": "apps/web/tests/opfs-object-writer.test.ts",
+      "sourceSha256": "fe8063a6931926f0433ab477c91afb188dc03efb6336959491efd8ae2a420318",
+      "destination": "packages/browser/retained-tests/opfs-object-writer.test.mjs"
     }
   ]
 }

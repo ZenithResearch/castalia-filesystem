@@ -76,8 +76,8 @@ export type FileEntry = DirectoryEntry;
 export type FileNode = SnapshotNode;
 export type ZipImportProgress = FilesystemProgress;
 export interface SnapshotReader {
-  validate_tree(root: string): Promise<void>;
-  validate_tree_bounded(root: string, limit: bigint): Promise<void>;
+  validate_tree(root: string): Promise<number>;
+  validate_tree_bounded(root: string, limit: bigint): Promise<number>;
   reachable_ids_bounded(
     root: string,
     count: number,

@@ -134,26 +134,16 @@ await copyFile(
   join(root, "docs/SNAPSHOT-V1.md"),
   join(output, "SNAPSHOT-V1.md"),
 );
-// Include runtime source, declarations, dependency lock and exact license/provenance inventory.
-for (const path of [
-  "package.json",
-  "package-lock.json",
-  "README.md",
-  "provenance/browser-extraction.json",
-  "provenance/browser-retained-tests.json",
-  "docs/IDENTITY-MAPPING.md",
-  "docs/BROWSER-REGISTRATION-V1.md",
-  "docs/BROWSER-ADAPTER.md",
-  "licenses/zip-js-BSD-3-Clause.txt",
-]) {
-  await mkdir(dirname(join(output, path)), { recursive: true });
+// Include the same documented source/provenance/license inventory as the private npm package.
+for (const path of ["package.json", "package-lock.json", "README.md"]) {
   await copyFile(join(root, path), join(output, path));
 }
-await cp(
-  join(root, "packages/browser/src"),
-  join(output, "packages/browser/src"),
-  { recursive: true, dereference: false },
-);
+for (const path of ["packages/browser/src", "docs", "provenance", "licenses"]) {
+  await cp(join(root, path), join(output, path), {
+    recursive: true,
+    dereference: false,
+  });
+}
 for (const [path, expected] of Object.entries(locks)) {
   if (digest(await readFile(join(root, path))) !== expected)
     throw new Error(`lock changed during build: ${path}`);

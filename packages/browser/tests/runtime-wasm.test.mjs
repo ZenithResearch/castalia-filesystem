@@ -244,3 +244,40 @@ test(
     await future.dispose();
   },
 );
+
+test(
+  "actual generated WASM declarations satisfy the shared adapter contract",
+  options,
+  async (t) => {
+    const { mkdtemp, writeFile, rm } = await import("node:fs/promises");
+    const { tmpdir } = await import("node:os");
+    const { join, resolve } = await import("node:path");
+    const { fileURLToPath } = await import("node:url");
+    const { execFileSync } = await import("node:child_process");
+    const dir = await mkdtemp(join(tmpdir(), "castalia-wasm-typecheck-"));
+    t.after(() => rm(dir, { recursive: true, force: true }));
+    const source = join(dir, "consumer.mts");
+    await writeFile(
+      source,
+      `import * as wasm from ${JSON.stringify(resolve(candidate, "web/castalia_filesystem_wasm.js"))};\nimport type {FilesystemWasm} from ${JSON.stringify(fileURLToPath(new URL("../src/index.mjs", import.meta.url)))};\nconst compatible:FilesystemWasm=wasm;\nvoid compatible;\n`,
+    );
+    execFileSync(
+      process.execPath,
+      [
+        createRequire(import.meta.url).resolve("typescript/bin/tsc"),
+        "--noEmit",
+        "--strict",
+        "--target",
+        "ES2022",
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        "--lib",
+        "ESNext,DOM",
+        source,
+      ],
+      { stdio: "pipe" },
+    );
+  },
+);
