@@ -1,3 +1,4 @@
+import { verifyNotices } from "./notices.mjs";
 import { createHash } from "node:crypto";
 import { lstat, readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -155,6 +156,13 @@ export async function verifyPackage(
     throw new Error("package inventory or bytes differ");
   }
   for (const path of [
+    "docs/SOURCE-PROVENANCE.md",
+    "docs/THIRD-PARTY-NOTICES.md",
+    "docs/AGPL-DISTRIBUTION.md",
+    "provenance/notices.json",
+    "provenance/extraction.json",
+    "licenses/cargo-runtime-notices.txt",
+    "licenses/rust-standard-library.html",
     "LICENSE",
     "SNAPSHOT-V1.md",
     "provenance/build-tools.json",
@@ -211,5 +219,6 @@ export async function verifyPackage(
       throw new Error("unbound or publishable generated package");
     }
   }
+  await verifyNotices(directory, manifest.locks);
   return manifest;
 }

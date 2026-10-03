@@ -1,3 +1,4 @@
+import { noticeFixture } from "./helpers/notice-fixture.mjs";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
@@ -61,12 +62,17 @@ async function fixture(t, patch = {}) {
     "docs/BROWSER-ADAPTER.md",
     "licenses/zip-js-BSD-3-Clause.txt",
     "provenance/browser-extraction.json",
+    "docs/SOURCE-PROVENANCE.md",
+    "docs/THIRD-PARTY-NOTICES.md",
+    "docs/AGPL-DISTRIBUTION.md",
+    "provenance/extraction.json",
     "provenance/build-tools.json",
     "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock",
   ]) {
     await mkdir(join(directory, path, ".."), { recursive: true });
     await writeFile(join(directory, path), "synthetic browser fixture");
   }
+  await noticeFixture(directory,{"castalia-filesystem-wasm/Cargo.lock":"c".repeat(64),"provenance/wasm-bindgen-cli-0.2.127.Cargo.lock":digest("synthetic browser fixture")});
   const manifest = {
     schema: SCHEMA,
     source: {
@@ -105,7 +111,7 @@ async function fixture(t, patch = {}) {
 test("complete package verifies against independent source and digest", async (t) => {
   const f = await fixture(t);
   const manifest = await verifyPackage(f.directory, f.hash, revision);
-  assert.equal(manifest.files.length, 22);
+  assert.equal(manifest.files.length, 29);
 });
 
 test("changed bytes, missing source pin and wrong digest reject", async (t) => {
@@ -189,3 +195,6 @@ test("publishable or source-unbound metadata fails after inventory verification"
     /publishable/,
   );
 });
+
+// Rehashing the outer inventory cannot make missing source notices a complete package.
+test("required notice payloads cannot be omitted even with a freshly calculated manifest",async t=>{const f=await fixture(t);await rm(join(f.directory,"licenses/cargo-runtime-notices.txt"));f.manifest.files=await inventory(f.directory);const bytes=JSON.stringify(f.manifest);await writeFile(join(f.directory,MANIFEST),bytes);await assert.rejects(verifyPackage(f.directory,digest(bytes),revision),/missing package file/);});

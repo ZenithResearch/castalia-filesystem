@@ -93,7 +93,8 @@
     {
       "path": "castalia-filesystem-wasm/LICENSE",
       "originalSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
-      "extractedSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+      "extractedSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "originNote": "Copied verbatim from the existing root LICENSE when the WASM path was introduced; no license bytes changed."
     },
     {
       "path": "castalia-filesystem-wasm/README.md",
@@ -117,5 +118,6 @@
     "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
     "sourcePath": "tests/fixtures/filesystem-native/Cargo.lock",
     "sha256": "8142b882a33358c29ace3f88926ae2ec47cb6a9d8e67520c97ada7c9de215bec"
-  }
+  },
+  "introductionScope": "Filesystem destination paths. The WASM LICENSE was a verbatim copy of the older root AGPL document; this is license-document ancestry, not program ownership."
 }

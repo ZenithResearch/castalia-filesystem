@@ -17,6 +17,7 @@ import {
   SCHEMA,
   REPOSITORY,
 } from "./lib/package-manifest.mjs";
+import { verifyNotices } from "./lib/notices.mjs";
 import { assertBindingToolProducers } from "./lib/binding-producers.mjs";
 import { stripWasmNameSection } from "./lib/strip-wasm-name.mjs";
 
@@ -107,6 +108,7 @@ for (const manifest of ["Cargo.toml", "castalia-filesystem-wasm/Cargo.toml"]) {
     }
   }
 }
+await verifyNotices(root, locks);
 await mkdir(output); // Never overwrite a prior candidate or its acceptance evidence.
 for (const [target, folder] of [
   ["web", "web"],
