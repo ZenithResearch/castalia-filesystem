@@ -68,14 +68,14 @@ export async function verifyPackage(directory, expectedDigest, expectedRevision,
   if (!development && (manifest.source.dirty || manifest.source.mode !== "candidate")) {
     throw new Error("development packages are not review candidates");
   }
-  keys(manifest.tools, ["rustToolchain", "rustc", "cargo", "node", "wasmPack", "wasmBindgen"]);
-  if (manifest.tools.rustToolchain !== "nightly-2026-06-21" ||
+  keys(manifest.tools, ["rustToolchain", "rustHost", "walrus", "rustc", "cargo", "node", "wasmPack", "wasmBindgen"]);
+  if (manifest.tools.rustHost !== "aarch64-apple-darwin" || manifest.tools.walrus !== "0.26.4" || manifest.tools.rustToolchain !== "nightly-2026-06-21" ||
       manifest.tools.node !== "24.18.0" || manifest.tools.wasmPack !== "wasm-pack 0.14.0" ||
       manifest.tools.wasmBindgen !== "wasm-bindgen 0.2.127" ||
       typeof manifest.tools.rustc !== "string" || typeof manifest.tools.cargo !== "string") {
     throw new Error("unsupported package tools");
   }
-  keys(manifest.locks, ["Cargo.lock", "castalia-filesystem-wasm/Cargo.lock"]);
+  keys(manifest.locks, ["Cargo.lock", "castalia-filesystem-wasm/Cargo.lock", "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"]);
   if (!Object.values(manifest.locks).every((value) => SHA256.test(value)) ||
       manifest.normalization !== "canonical-build-paths-and-remove-only-wasm-name-section") {
     throw new Error("invalid package provenance");
@@ -87,13 +87,14 @@ export async function verifyPackage(directory, expectedDigest, expectedRevision,
   if (JSON.stringify(actual) !== JSON.stringify(manifest.files)) {
     throw new Error("package inventory or bytes differ");
   }
-  for (const path of ["LICENSE", "SNAPSHOT-V1.md",
+  for (const path of ["LICENSE", "SNAPSHOT-V1.md", "provenance/build-tools.json", "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock",
     "web/castalia_filesystem_wasm.js", "web/castalia_filesystem_wasm.d.ts",
     "web/castalia_filesystem_wasm_bg.wasm", "web/package.json",
     "node/castalia_filesystem_wasm.js", "node/castalia_filesystem_wasm.d.ts",
     "node/castalia_filesystem_wasm_bg.wasm", "node/package.json"]) {
     if (!actual.some((entry) => entry.path === path)) throw new Error(`missing package file: ${path}`);
   }
+  if(digest(await readFile(join(directory,"provenance/wasm-bindgen-cli-0.2.127.Cargo.lock")))!==manifest.locks["provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"])throw new Error("binding tool lock digest mismatch");
   for (const target of ["web", "node"]) {
     const metadata = JSON.parse(await readFile(join(directory, target, "package.json"), "utf8"));
     if (metadata.private !== true || metadata.castaliaSourceRevision !== expectedRevision) {

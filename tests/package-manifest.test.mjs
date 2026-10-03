@@ -18,11 +18,14 @@ async function fixture(t, patch = {}) {
   }
   await writeFile(join(directory, "LICENSE"), "synthetic license");
   await writeFile(join(directory, "SNAPSHOT-V1.md"), "synthetic contract");
+  await mkdir(join(directory,"provenance"));
+  await writeFile(join(directory,"provenance/build-tools.json"),"synthetic tool provenance");
+  await writeFile(join(directory,"provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"),"synthetic tool lock");
   const manifest = {
     schema: SCHEMA,
     source: { repository: REPOSITORY, revision, dirty: false, mode: "candidate" },
-    tools: { rustToolchain: "nightly-2026-06-21", rustc: "fixture", cargo: "fixture", node: "24.18.0", wasmPack: "wasm-pack 0.14.0", wasmBindgen: "wasm-bindgen 0.2.127" },
-    locks: { "Cargo.lock": "b".repeat(64), "castalia-filesystem-wasm/Cargo.lock": "c".repeat(64) },
+    tools: { rustToolchain: "nightly-2026-06-21", rustHost:"aarch64-apple-darwin", walrus:"0.26.4", rustc: "fixture", cargo: "fixture", node: "24.18.0", wasmPack: "wasm-pack 0.14.0", wasmBindgen: "wasm-bindgen 0.2.127" },
+    locks: { "Cargo.lock": "b".repeat(64), "castalia-filesystem-wasm/Cargo.lock": "c".repeat(64),"provenance/wasm-bindgen-cli-0.2.127.Cargo.lock":digest("synthetic tool lock") },
     normalization: "canonical-build-paths-and-remove-only-wasm-name-section",
     files: await inventory(directory),
     ...patch,
@@ -35,7 +38,7 @@ async function fixture(t, patch = {}) {
 test("complete package verifies against independent source and digest", async (t) => {
   const f = await fixture(t);
   const manifest = await verifyPackage(f.directory, f.hash, revision);
-  assert.equal(manifest.files.length, 10);
+  assert.equal(manifest.files.length, 12);
 });
 
 test("changed bytes, missing source pin and wrong digest reject", async (t) => {

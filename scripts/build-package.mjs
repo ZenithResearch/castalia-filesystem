@@ -5,6 +5,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { command, lockedMetadata, RUST_TOOLCHAIN, NODE_VERSION } from "./lib/process.mjs";
 import { digest, inventory, verifyPackage, MANIFEST, SCHEMA, REPOSITORY } from "./lib/package-manifest.mjs";
+import { assertBindingToolProducers } from "./lib/binding-producers.mjs";
 import { stripWasmNameSection } from "./lib/strip-wasm-name.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -26,6 +27,8 @@ const initialStatus = status();
 if (initialStatus && !development) throw new Error("candidate source must be clean and committed");
 const compilerInfo = command("rustc", [`+${RUST_TOOLCHAIN}`, "-vV"]);
 const compilerCommit = /^commit-hash: ([0-9a-f]{40})$/m.exec(compilerInfo)?.[1];
+const rustHost = /^host: (.+)$/m.exec(compilerInfo)?.[1];
+if(rustHost!=="aarch64-apple-darwin")throw new Error("canonical candidate builder requires aarch64-apple-darwin; Linux remains a portability test host");
 const sysroot = command("rustc", [`+${RUST_TOOLCHAIN}`, "--print", "sysroot"]);
 const env = {
   ...process.env,
@@ -39,6 +42,8 @@ const env = {
 const options = { cwd: root, env };
 const tools = {
   rustToolchain: RUST_TOOLCHAIN,
+  rustHost,
+  walrus: "0.26.4",
   rustc: command("rustc", [`+${RUST_TOOLCHAIN}`, "--version"], options),
   cargo: command("cargo", [`+${RUST_TOOLCHAIN}`, "--version"], options),
   node: process.versions.node,
@@ -49,7 +54,7 @@ if (tools.wasmPack !== "wasm-pack 0.14.0" || tools.wasmBindgen !== "wasm-bindgen
   throw new Error("pinned wasm-pack and wasm-bindgen tools are required");
 }
 const locks = {};
-for (const path of ["Cargo.lock", "castalia-filesystem-wasm/Cargo.lock"]) {
+for (const path of ["Cargo.lock", "castalia-filesystem-wasm/Cargo.lock", "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"]) {
   locks[path] = digest(await readFile(join(root, path)));
 }
 for (const manifest of ["Cargo.toml", "castalia-filesystem-wasm/Cargo.toml"]) {
@@ -69,6 +74,7 @@ for (const [target, folder] of [["web", "web"], ["nodejs", "node"]]) {
     "--target", target, "--release", "--mode", "no-install", "--no-opt",
     "--out-dir", join(output, folder), "--", "--locked", "--offline"], options);
   const wasm = join(output, folder, "castalia_filesystem_wasm_bg.wasm");
+  assertBindingToolProducers(await readFile(wasm));
   await writeFile(wasm, stripWasmNameSection(await readFile(wasm)));
   const packagePath = join(output, folder, "package.json");
   const metadata = JSON.parse(await readFile(packagePath, "utf8"));
@@ -79,6 +85,8 @@ for (const [target, folder] of [["web", "web"], ["nodejs", "node"]]) {
 console.log(command(process.execPath, [join(root, "castalia-filesystem-wasm/tests/parity.mjs"), join(output, "node")], options));
 await copyFile(join(root, "LICENSE"), join(output, "LICENSE"));
 await copyFile(join(root, "docs/SNAPSHOT-V1.md"), join(output, "SNAPSHOT-V1.md"));
+await mkdir(join(output,"provenance"));
+for(const path of ["provenance/build-tools.json","provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"])await copyFile(join(root,path),join(output,path));
 for (const [path, expected] of Object.entries(locks)) {
   if (digest(await readFile(join(root, path))) !== expected) throw new Error(`lock changed during build: ${path}`);
 }

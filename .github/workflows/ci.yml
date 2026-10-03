@@ -35,10 +35,10 @@ jobs:
       - run: cargo fmt --manifest-path castalia-filesystem-wasm/Cargo.toml -- --check
       - run: cargo check -p castalia-filesystem-core --target wasm32-unknown-unknown --locked --offline
   wasm-candidate:
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-15
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-15]
+        replica: [one, two]
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -66,7 +66,7 @@ jobs:
       - name: Upload candidate bytes without publication
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: castalia-filesystem-${{ steps.candidate.outputs.revision }}-${{ matrix.os }}
+          name: castalia-filesystem-${{ steps.candidate.outputs.revision }}-${{ matrix.replica }}
           path: ${{ runner.temp }}/filesystem-candidate
           include-hidden-files: true
           if-no-files-found: error
