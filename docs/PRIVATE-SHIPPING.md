@@ -19,7 +19,7 @@ Both sites pin the index origin/key and the configured gateway origin/key. This 
 5. Retrieve the exact immutable version using fresh gateway reads. Verify ciphertext size/hash, decrypt through newly approved custody access, then validate the full file or snapshot transport using actual WASM. Local upload buffers cannot satisfy this check.
 6. Recheck admission and previous head in one SQLite index transaction. A verified acceptance receipt permits `Shipped`; retained local source remains available. Lost responses reconcile the stable operation ID. Conflicts keep both immutable remote revisions and do not silently retry against a new head.
 
-The UI states are Local only, Shipping, Shipped, Local changes and Failed. Shipping includes paused/resumable and checking-completion details. Local edits never mutate the selected shipment; a changed local root is shown as Local changes after success. Terminal authority/integrity errors need explicit resolution. Worker loss, cancellation or service loss never becomes successful publication.
+The UI states are Local only, Shipping, Shipped, Local changes and Failed. Shipping includes paused/resumable and checking-completion details. Local edits never mutate the selected shipment; a changed local root is shown as Local changes during or after shipping, while the underlying shipment progress and resume state are retained. Terminal authority/integrity errors need explicit resolution. Worker loss, cancellation or service loss never becomes successful publication.
 
 ## Recovery and local storage
 
