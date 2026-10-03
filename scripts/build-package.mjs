@@ -1,4 +1,6 @@
 import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
+import { homedir } from "node:os";
+import { canonicalBuildFlags } from "./lib/build-paths.mjs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { command, lockedMetadata, RUST_TOOLCHAIN, NODE_VERSION } from "./lib/process.mjs";
@@ -22,13 +24,17 @@ const revision = git("rev-parse", "HEAD");
 const status = () => git("status", "--porcelain", "--untracked-files=all");
 const initialStatus = status();
 if (initialStatus && !development) throw new Error("candidate source must be clean and committed");
+const compilerInfo = command("rustc", [`+${RUST_TOOLCHAIN}`, "-vV"]);
+const compilerCommit = /^commit-hash: ([0-9a-f]{40})$/m.exec(compilerInfo)?.[1];
+const sysroot = command("rustc", [`+${RUST_TOOLCHAIN}`, "--print", "sysroot"]);
 const env = {
   ...process.env,
   RUSTUP_TOOLCHAIN: RUST_TOOLCHAIN,
   CARGO_NET_OFFLINE: "true",
   CARGO_BUILD_JOBS: "1",
   CARGO_TARGET_DIR: process.env.CARGO_TARGET_DIR || join(root, "target"),
-  RUSTFLAGS: `--remap-path-prefix=${root}=/castalia-source`,
+  RUSTFLAGS: undefined,
+  CARGO_ENCODED_RUSTFLAGS: canonicalBuildFlags({root,cargoHome:process.env.CARGO_HOME || join(homedir(), ".cargo"),sysroot,compilerCommit}),
 };
 const options = { cwd: root, env };
 const tools = {
@@ -84,7 +90,7 @@ const manifest = {
   source: { repository: REPOSITORY, revision, dirty: Boolean(initialStatus), mode: development ? "development" : "candidate" },
   tools,
   locks,
-  normalization: "remove-only-wasm-name-section",
+  normalization: "canonical-build-paths-and-remove-only-wasm-name-section",
   files: await inventory(output),
 };
 const bytes = `${JSON.stringify(manifest, null, 2)}\n`;

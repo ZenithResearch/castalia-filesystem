@@ -23,7 +23,7 @@ async function fixture(t, patch = {}) {
     source: { repository: REPOSITORY, revision, dirty: false, mode: "candidate" },
     tools: { rustToolchain: "nightly-2026-06-21", rustc: "fixture", cargo: "fixture", node: "24.18.0", wasmPack: "wasm-pack 0.14.0", wasmBindgen: "wasm-bindgen 0.2.127" },
     locks: { "Cargo.lock": "b".repeat(64), "castalia-filesystem-wasm/Cargo.lock": "c".repeat(64) },
-    normalization: "remove-only-wasm-name-section",
+    normalization: "canonical-build-paths-and-remove-only-wasm-name-section",
     files: await inventory(directory),
     ...patch,
   };

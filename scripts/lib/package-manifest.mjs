@@ -77,7 +77,7 @@ export async function verifyPackage(directory, expectedDigest, expectedRevision,
   }
   keys(manifest.locks, ["Cargo.lock", "castalia-filesystem-wasm/Cargo.lock"]);
   if (!Object.values(manifest.locks).every((value) => SHA256.test(value)) ||
-      manifest.normalization !== "remove-only-wasm-name-section") {
+      manifest.normalization !== "canonical-build-paths-and-remove-only-wasm-name-section") {
     throw new Error("invalid package provenance");
   }
   if (!Array.isArray(manifest.files) || manifest.files.length === 0 || manifest.files.length > MAX_FILES) {

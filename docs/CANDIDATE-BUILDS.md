@@ -11,3 +11,5 @@ The package manifest excludes itself from its file inventory; its SHA-256 is rec
 CI artifacts are review transport, not a published release or a permanent download promise. Keep a verified candidate copy with the reconciliation evidence. No workflow publishes to npm, crates.io or GitHub Releases, and no workflow deploys or merges. Final release pins require later approval and merged source.
 
 A development build can be requested explicitly for diagnosis; its dirty/development marker is rejected by normal consumer verification. Production consumers retain their own complete application-build manifests and Chrome, staging and private-archive acceptance gates.
+
+Hosted reproducibility is checked independently on Linux and macOS. Compilation remaps checkout, Cargo-home and installed rust-src paths before code generation; postprocessing still removes only the optional WASM name section. This corrects host-specific panic paths and generated closure identifiers, without weakening exact package verification. Both hosted manifests must match completely. Matching two checkouts on one machine alone does not establish cross-host reproducibility.
