@@ -1,0 +1,54 @@
+{
+  "schema": "castalia.browser-adapter-extraction.v1",
+  "sourceRepository": "https://github.com/ZenithResearch/castalia-web",
+  "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+  "sourceLicense": "UNRESOLVED: source repository has no root LICENSE, SPDX headers or package license declaration; no relicensing inferred",
+  "transformation": "TypeScript 5.9.3 transpilation to ES2022 ESM followed by reviewed workspace isolation adaptations; v1 parser and snapshot formats preserved",
+  "files": [
+    {
+      "sourcePath": "apps/web/src/files/catalog.ts",
+      "sourceSha256": "6ab6273a4e20ad7354fe40312f808c65615c434a9d6ffcaabb18f4be89784a92",
+      "destination": "packages/browser/src/catalog-format.mjs"
+    },
+    {
+      "sourcePath": "apps/web/src/files/opfs-object-reader.ts",
+      "sourceSha256": "ade3e51732a24fbc0dffaaf2e19da191e1c1dbb8a1fbb5619abf52ad173c6b75",
+      "destination": "packages/browser/src/opfs-object-reader.mjs"
+    },
+    {
+      "sourcePath": "apps/web/src/files/opfs-object-writer.ts",
+      "sourceSha256": "18d00174ec82aaa230ec448c5c2ff9c28914ab58faf38dbec994e9a3205f3f33",
+      "destination": "packages/browser/src/opfs-object-writer.mjs"
+    },
+    {
+      "sourcePath": "apps/web/src/files/operation-object-cache.ts",
+      "sourceSha256": "65348162a93696541c8333fb86d8e4b5a744529edccd7f9dcbdfa951c203989e",
+      "destination": "packages/browser/src/operation-object-cache.mjs"
+    },
+    {
+      "sourcePath": "apps/web/src/files/reclaim.ts",
+      "sourceSha256": "44b14524a21771ef35c0bc5d930cc5d4ae9edbddc7b3704cefeef12ba4ffe8af",
+      "destination": "packages/browser/src/reclaim.mjs"
+    },
+    {
+      "sourcePath": "apps/web/src/files/import-zip.ts",
+      "sourceSha256": "ad4ba91b78c8d95819f47029ac5d4f08066817e4095752c16d58fb82b7e7e93c",
+      "destination": "packages/browser/src/import-zip.mjs"
+    },
+    {
+      "sourcePath": "apps/web/src/files/bounded-zip-output.ts",
+      "sourceSha256": "ad26a17e30e24202606e95f258819ff4815d652ce9862760fe5ee8a3b76d49a7",
+      "destination": "packages/browser/src/bounded-zip-output.mjs"
+    },
+    {
+      "sourcePath": "apps/web/src/files/filesystem-worker.ts",
+      "sourceSha256": "1182e28a9239863029698b72cc915b0780909c9eba7afcbff8f7092561a9956e",
+      "destination": "packages/browser/src/filesystem-worker.mjs"
+    },
+    {
+      "sourcePath": "apps/web/src/files/filesystem-client.ts",
+      "sourceSha256": "535c1b451552ec69fe782f6678bed250d91a108feccf2021f4cb8ab693c17365",
+      "destination": "packages/browser/src/filesystem-client.mjs"
+    }
+  ]
+}
