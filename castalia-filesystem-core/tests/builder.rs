@@ -1,7 +1,7 @@
 use castalia_filesystem_core::{
     Chunk, ContentId, Error, ObjectReader, ObjectWriter, SnapshotView,
     builder::SnapshotBuilder,
-    revisions::{StagedFile, revise_file},
+    revisions::{StagedFile, create_directory, create_file, revise_file},
 };
 use futures::executor::block_on;
 use std::cell::RefCell;
@@ -179,5 +179,83 @@ fn revision_refuses_missing_or_corrupt_staged_chunks() {
             .is_err()
         );
         assert!(SnapshotView::open(&store, base).await.is_ok());
+    });
+}
+
+#[test]
+fn create_only_revisions_preserve_old_roots_and_empty_directories() {
+    block_on(async {
+        let (store, base) = build(false).await;
+        let original = SnapshotView::open(&store, base).await.unwrap();
+        let unchanged = original.lookup("/writer/a.md").await.unwrap();
+
+        let folder = create_directory(&store, base, "/writer/new", 3)
+            .await
+            .unwrap();
+        let folder_view = SnapshotView::open(&store, folder).await.unwrap();
+        assert_eq!(folder_view.snapshot().previous, Some(base));
+        assert_eq!(folder_view.snapshot().generation, 1);
+        assert!(folder_view.list("/writer/new").await.unwrap().is_empty());
+        assert!(original.lookup("/writer/new").await.is_err());
+        assert_eq!(folder_view.lookup("/writer/a.md").await.unwrap(), unchanged);
+
+        let nested = create_directory(&store, folder, "/writer/new/deeper", 4)
+            .await
+            .unwrap();
+        let empty_file = create_file(
+            &store,
+            nested,
+            "/writer/new/deeper/note.md",
+            StagedFile {
+                modified_ms: 5,
+                executable: false,
+                chunks: vec![],
+            },
+        )
+        .await
+        .unwrap();
+        let latest = SnapshotView::open(&store, empty_file).await.unwrap();
+        assert_eq!(latest.snapshot().generation, 3);
+        assert_eq!(latest.snapshot().previous, Some(nested));
+        assert_eq!(latest.validate_tree().await.unwrap(), 8);
+        assert!(
+            latest
+                .read_range("/writer/new/deeper/note.md", 0, 1)
+                .await
+                .unwrap()
+                .is_empty()
+        );
+        assert!(
+            create_directory(&store, empty_file, "/writer/new", 6)
+                .await
+                .is_err()
+        );
+        assert!(
+            create_directory(&store, empty_file, "/writer/a.md/child", 6)
+                .await
+                .is_err()
+        );
+        assert!(
+            create_directory(&store, empty_file, "/missing/child", 6)
+                .await
+                .is_err()
+        );
+        assert!(create_directory(&store, empty_file, "/", 6).await.is_err());
+        for path in ["/writer/a.md", "/writer/new"] {
+            assert!(
+                create_file(
+                    &store,
+                    empty_file,
+                    path,
+                    StagedFile {
+                        modified_ms: 6,
+                        executable: false,
+                        chunks: vec![],
+                    },
+                )
+                .await
+                .is_err()
+            );
+        }
     });
 }

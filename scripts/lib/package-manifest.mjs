@@ -161,6 +161,7 @@ export async function verifyPackage(
     "docs/AGPL-DISTRIBUTION.md",
     "provenance/notices.json",
     "provenance/extraction.json",
+    "provenance/local-browser-port.json",
     "licenses/cargo-runtime-notices.txt",
     "licenses/rust-standard-library.html",
     "LICENSE",
