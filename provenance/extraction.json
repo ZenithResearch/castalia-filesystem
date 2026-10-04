@@ -1,0 +1,123 @@
+{
+  "schema": "castalia.filesystem.extraction.v1",
+  "sourceRepository": "https://github.com/bananawalnut/castalia",
+  "sourceRevision": "c5c0374d8ee00170bfd86c636a708f5c6284bb19",
+  "introducedBy": "5d151d2cafb6123967c985f81b4c82bfed0e18d5",
+  "files": [
+    {
+      "path": "castalia-filesystem-core/Cargo.toml",
+      "originalSha256": "5b7bd20c69bbd0e05bf54915c42533f5112518528e51c8be7f2d217962f5de3c",
+      "extractedSha256": "5b7bd20c69bbd0e05bf54915c42533f5112518528e51c8be7f2d217962f5de3c"
+    },
+    {
+      "path": "castalia-filesystem-core/examples/fuse_fixture.rs",
+      "originalSha256": "9a5aee51dee0e5ebff8ceac7b9fa9b5e8799ea8fc00b7aaa5b8862039cfc9ac9",
+      "extractedSha256": "9a5aee51dee0e5ebff8ceac7b9fa9b5e8799ea8fc00b7aaa5b8862039cfc9ac9"
+    },
+    {
+      "path": "castalia-filesystem-core/examples/snapshot.rs",
+      "originalSha256": "5645ec342c370edd771ac49ff0ed8e16fbe4d9e82c68d8b33fdc4c1232cced2d",
+      "extractedSha256": "5645ec342c370edd771ac49ff0ed8e16fbe4d9e82c68d8b33fdc4c1232cced2d"
+    },
+    {
+      "path": "castalia-filesystem-core/fixtures/empty-directory-v1.json",
+      "originalSha256": "04181e82e2a39952fc138fbbe1a08fe6adc94a85a5694209348cbb9107d114d5",
+      "extractedSha256": "04181e82e2a39952fc138fbbe1a08fe6adc94a85a5694209348cbb9107d114d5"
+    },
+    {
+      "path": "castalia-filesystem-core/src/bin/castalia-fs.rs",
+      "originalSha256": "c8ff857c211f20b503021131b66633e3c0f07da11f46114a099b43103839487d",
+      "extractedSha256": "c8ff857c211f20b503021131b66633e3c0f07da11f46114a099b43103839487d"
+    },
+    {
+      "path": "castalia-filesystem-core/src/builder.rs",
+      "originalSha256": "6f4ffd67c73a50921e527ed14faad4bf5e9171a333339fe274c322f5492684a2",
+      "extractedSha256": "6f4ffd67c73a50921e527ed14faad4bf5e9171a333339fe274c322f5492684a2"
+    },
+    {
+      "path": "castalia-filesystem-core/src/fuse.rs",
+      "originalSha256": "c49486e3177a764399b2766902e7af7bb9aaba0534dd614231782d514eb701d2",
+      "extractedSha256": "c49486e3177a764399b2766902e7af7bb9aaba0534dd614231782d514eb701d2"
+    },
+    {
+      "path": "castalia-filesystem-core/src/lib.rs",
+      "originalSha256": "889254dd047a248b7a9e79836cee58b322dc5a62c14baf59252b059402a71095",
+      "extractedSha256": "889254dd047a248b7a9e79836cee58b322dc5a62c14baf59252b059402a71095"
+    },
+    {
+      "path": "castalia-filesystem-core/src/native.rs",
+      "originalSha256": "8af2c2f32a0cf33a7e982132be061b537c2c5adee9d3b2181cf4f54785137214",
+      "extractedSha256": "8af2c2f32a0cf33a7e982132be061b537c2c5adee9d3b2181cf4f54785137214"
+    },
+    {
+      "path": "castalia-filesystem-core/src/revisions.rs",
+      "originalSha256": "2b8dbcacd21de971f66332ff4ba3dc1bfe49153085c184174577b8607f9d128d",
+      "extractedSha256": "2b8dbcacd21de971f66332ff4ba3dc1bfe49153085c184174577b8607f9d128d"
+    },
+    {
+      "path": "castalia-filesystem-core/src/transfer.rs",
+      "originalSha256": "2fe23191e3fb9d0a52531b1b29272e0049115a033b491dd52f76ce9e84c5e594",
+      "extractedSha256": "2fe23191e3fb9d0a52531b1b29272e0049115a033b491dd52f76ce9e84c5e594"
+    },
+    {
+      "path": "castalia-filesystem-core/tests/builder.rs",
+      "originalSha256": "0a1ef411c256fe50cf07c58f0f0fd070efb0f188c24f70c59cd6cf01abebf5ac",
+      "extractedSha256": "0a1ef411c256fe50cf07c58f0f0fd070efb0f188c24f70c59cd6cf01abebf5ac"
+    },
+    {
+      "path": "castalia-filesystem-core/tests/fuse_adapter.rs",
+      "originalSha256": "21b4070840b34b7e4ffd8201062f1af4e0c999a06e58b0693a9d1a40b4a7ad3e",
+      "extractedSha256": "21b4070840b34b7e4ffd8201062f1af4e0c999a06e58b0693a9d1a40b4a7ad3e"
+    },
+    {
+      "path": "castalia-filesystem-core/tests/native_io.rs",
+      "originalSha256": "fbcb1bbe387b88ebe1df892fc7b1b4bb1aa9d08fc6a0c65a9e700903d9365d7e",
+      "extractedSha256": "fbcb1bbe387b88ebe1df892fc7b1b4bb1aa9d08fc6a0c65a9e700903d9365d7e"
+    },
+    {
+      "path": "castalia-filesystem-core/tests/snapshots.rs",
+      "originalSha256": "3d71fd596b077df7bcc1009a42e1d677e485b4acd4d525babb7c4958facdec99",
+      "extractedSha256": "3d71fd596b077df7bcc1009a42e1d677e485b4acd4d525babb7c4958facdec99"
+    },
+    {
+      "path": "castalia-filesystem-wasm/Cargo.lock",
+      "originalSha256": "601f89718915629691306bb1086a15459569d1bff79fd61a17bcf86885bbf1cf",
+      "extractedSha256": "601f89718915629691306bb1086a15459569d1bff79fd61a17bcf86885bbf1cf"
+    },
+    {
+      "path": "castalia-filesystem-wasm/Cargo.toml",
+      "originalSha256": "77d59276a32e4b1a4450d9e776489ec6de6a6227a49876a9306cbf06a5d5f89f",
+      "extractedSha256": "c6ae5b50f992a768687587125a5fc030d4476a2997ce96f751619131aa52d123",
+      "change": "Repository metadata points to the maintained source export; dependencies and crate settings are unchanged."
+    },
+    {
+      "path": "castalia-filesystem-wasm/LICENSE",
+      "originalSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "extractedSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "originNote": "Copied verbatim from the existing root LICENSE when the WASM path was introduced; no license bytes changed."
+    },
+    {
+      "path": "castalia-filesystem-wasm/README.md",
+      "originalSha256": "a58d6254e6c02c01172d55ea8d9e50a9f754df7243932b0f833189c767947907",
+      "extractedSha256": "901de5b0a6624415abebc4ceeadd087a089e208ca3ae3c5d2156c2108438cb11",
+      "change": "Current build and provenance instructions replace historical checkout-specific guidance; original preserved in docs/history/BROWSER-BRIDGE.md."
+    },
+    {
+      "path": "castalia-filesystem-wasm/src/lib.rs",
+      "originalSha256": "886ea9c848da3ddcba1dbb71a59a3de779e1ae20f530ca13cc7f38217bb85f52",
+      "extractedSha256": "886ea9c848da3ddcba1dbb71a59a3de779e1ae20f530ca13cc7f38217bb85f52"
+    },
+    {
+      "path": "castalia-filesystem-wasm/tests/parity.mjs",
+      "originalSha256": "75167823d8c964d48689e12560960827ef0cb503b5a1d8265002f0cb6208276b",
+      "extractedSha256": "75167823d8c964d48689e12560960827ef0cb503b5a1d8265002f0cb6208276b"
+    }
+  ],
+  "nativeLock": {
+    "sourceRepository": "https://github.com/ZenithResearch/castalia-web",
+    "sourceRevision": "986808d64795b2f99be41e4badc84c10c6e90cad",
+    "sourcePath": "tests/fixtures/filesystem-native/Cargo.lock",
+    "sha256": "8142b882a33358c29ace3f88926ae2ec47cb6a9d8e67520c97ada7c9de215bec"
+  },
+  "introductionScope": "Filesystem destination paths. The WASM LICENSE was a verbatim copy of the older root AGPL document; this is license-document ancestry, not program ownership."
+}

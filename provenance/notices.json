@@ -1,0 +1,674 @@
+{
+  "schema": "castalia.filesystem.notices.v1",
+  "scope": "Potential wasm32 runtime dependencies and generated-binding source, plus explicitly marked build-tool context. Resolved dependency graphs are not proof every component survives linking. Declared terms and copied notices do not resolve origin or additional-licensing authority.",
+  "sourceLocks": {
+    "castalia-filesystem-wasm/Cargo.lock": "601f89718915629691306bb1086a15459569d1bff79fd61a17bcf86885bbf1cf",
+    "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock": "420a0f944d2521032fbdc6a46d1519b7943ffe8254d019dc37ab8865428fceb9"
+  },
+  "components": [
+    {
+      "name": "arrayvec",
+      "version": "0.7.8",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/arrayvec/0.7.8",
+      "registryChecksum": "d3fb67a6e08acf24fdeccbac2cb6ac4305825bd1f117462e0e6f2f193345ad56",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 191,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 11081,
+          "size": 1071,
+          "sha256": "4da95ec4ecb65b738d470b7d762894ad9c97da93e6cbfb18b570fc2c96f4b871"
+        }
+      ]
+    },
+    {
+      "name": "blake3",
+      "version": "1.8.7",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "CC0-1.0 OR Apache-2.0 OR Apache-2.0 WITH LLVM-exception",
+      "source": "https://crates.io/crates/blake3/1.8.7",
+      "registryChecksum": "6d9e454fc11f76977dc803893aff6304ed33d6a26efae8696573bea74baa27ae",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE_A2",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 12192,
+          "size": 11361,
+          "sha256": "00fcc7a934ddbc9ece2a7cc063ac788e284b703b1d705ccbba72d462aa97921e"
+        },
+        {
+          "upstreamPath": "LICENSE_A2LLVM",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 23597,
+          "size": 12267,
+          "sha256": "a5695f57ea0c221e0e8b7d784ff774c35e88c3d3270353646a925880bb3492cc"
+        },
+        {
+          "upstreamPath": "LICENSE_CC0",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 35905,
+          "size": 7048,
+          "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+        }
+      ]
+    },
+    {
+      "name": "cfg-if",
+      "version": "1.0.5",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/cfg-if/1.0.5",
+      "registryChecksum": "4e7648175b45a9a48536d676f68d918270699102aa8dab5496df06904c914600",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 42997,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 53885,
+          "size": 1057,
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
+    {
+      "name": "constant_time_eq",
+      "version": "0.4.2",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "CC0-1.0 OR MIT-0 OR Apache-2.0",
+      "source": "https://crates.io/crates/constant_time_eq/0.4.2",
+      "registryChecksum": "3d52eff69cd5e647efe296129160853a42795992097e8af39800e1060caeea9b",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 54996,
+          "size": 9723,
+          "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+        },
+        {
+          "upstreamPath": "LICENSE-CC0",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 64770,
+          "size": 7048,
+          "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT0",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 71870,
+          "size": 858,
+          "sha256": "9a3aeb3f63659c4c6302d315e1d98784d1e8559858a47ff9562e091bb922d28d"
+        }
+      ]
+    },
+    {
+      "name": "futures-channel",
+      "version": "0.3.34",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-channel/0.3.34",
+      "registryChecksum": "b1f9e3d69d39e4862ffed03ed071a76f9a13ba1d9109d355b0f0aa6b15e393c4",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 72782,
+          "size": 10874,
+          "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 83707,
+          "size": 1094,
+          "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+        }
+      ]
+    },
+    {
+      "name": "futures-core",
+      "version": "0.3.34",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-core/0.3.34",
+      "registryChecksum": "92d699e522242e69e3003b94ecc1f960f3a5e015aa7c5d7486e65ad01dd94f5e",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 84852,
+          "size": 10874,
+          "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 95774,
+          "size": 1094,
+          "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+        }
+      ]
+    },
+    {
+      "name": "futures-io",
+      "version": "0.3.34",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-io/0.3.34",
+      "registryChecksum": "53c0fa8157de1303bfffdaa1cc2a673bfffb60102f76b0ef4441659124373fed",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 96917,
+          "size": 10874,
+          "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 107837,
+          "size": 1094,
+          "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+        }
+      ]
+    },
+    {
+      "name": "futures-sink",
+      "version": "0.3.34",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-sink/0.3.34",
+      "registryChecksum": "1944426bf7d03f1d14f708785e4b33efd750b36d48a157b836b3efc15ede8e1d",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 108982,
+          "size": 10874,
+          "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 119904,
+          "size": 1094,
+          "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+        }
+      ]
+    },
+    {
+      "name": "futures-task",
+      "version": "0.3.34",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-task/0.3.34",
+      "registryChecksum": "cd417de3d1d015fc3bfd2b1ea46dfc7bab72ef86f1cc7cc9c78e728b34a6d1fd",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 121049,
+          "size": 10874,
+          "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 131971,
+          "size": 1094,
+          "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+        }
+      ]
+    },
+    {
+      "name": "futures-util",
+      "version": "0.3.34",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/futures-util/0.3.34",
+      "registryChecksum": "0d50a92467f8ba5dd6e3ee5d4bd04d73ab2e4e1c44474a0674821dfce14b79bc",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 133116,
+          "size": 10874,
+          "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 144038,
+          "size": 1094,
+          "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+        }
+      ]
+    },
+    {
+      "name": "itoa",
+      "version": "1.0.18",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/itoa/1.0.18",
+      "registryChecksum": "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 145175,
+          "size": 9723,
+          "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 154938,
+          "size": 1023,
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        }
+      ]
+    },
+    {
+      "name": "js-sys",
+      "version": "0.3.104",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/js-sys/0.3.104",
+      "registryChecksum": "0e0c1080212aad755ea003d18543e8768dd432c48819efd73a7bf1e39b7a5a3a",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 156007,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 166897,
+          "size": 1057,
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
+    {
+      "name": "memchr",
+      "version": "2.8.3",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "Unlicense OR MIT",
+      "source": "https://crates.io/crates/memchr/2.8.3",
+      "registryChecksum": "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98",
+      "notices": [
+        {
+          "upstreamPath": "COPYING",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 167991,
+          "size": 126,
+          "sha256": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 168158,
+          "size": 1081,
+          "sha256": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+        },
+        {
+          "upstreamPath": "UNLICENSE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 169278,
+          "size": 1211,
+          "sha256": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c"
+        }
+      ]
+    },
+    {
+      "name": "once_cell",
+      "version": "1.21.4",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/once_cell/1.21.4",
+      "registryChecksum": "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 170537,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 181429,
+          "size": 1023,
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        }
+      ]
+    },
+    {
+      "name": "pin-project-lite",
+      "version": "0.2.17",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "Apache-2.0 OR MIT",
+      "source": "https://crates.io/crates/pin-project-lite/0.2.17",
+      "registryChecksum": "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 182507,
+          "size": 10174,
+          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 192733,
+          "size": 1023,
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        }
+      ]
+    },
+    {
+      "name": "serde",
+      "version": "1.0.229",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/serde/1.0.229",
+      "registryChecksum": "4148590afebada386688f18773da617792bf2ef03ffc1e4cbd2b1d45b023e0ba",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 193801,
+          "size": 9723,
+          "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 203566,
+          "size": 1023,
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        }
+      ]
+    },
+    {
+      "name": "serde_core",
+      "version": "1.0.229",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/serde_core/1.0.229",
+      "registryChecksum": "67dca2c9c51e58a4791a4b1ed58308b39c64224d349a935ab5039aa360942a48",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 204639,
+          "size": 9723,
+          "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 214409,
+          "size": 1023,
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        }
+      ]
+    },
+    {
+      "name": "serde_json",
+      "version": "1.0.151",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/serde_json/1.0.151",
+      "registryChecksum": "c841b55ecdae098c80dcae9cf767f6f8a0c2cdb3416bbef72181df4d0fe73f14",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 215482,
+          "size": 9723,
+          "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 225252,
+          "size": 1023,
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        }
+      ]
+    },
+    {
+      "name": "slab",
+      "version": "0.4.12",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT",
+      "source": "https://crates.io/crates/slab/0.4.12",
+      "registryChecksum": "0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 226311,
+          "size": 1055,
+          "sha256": "8ce0830173fdac609dfb4ea603fdc002c2f4af0dc9b1a005653f5da9cf534b18"
+        }
+      ]
+    },
+    {
+      "name": "unicode-ident",
+      "version": "1.0.26",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "(MIT OR Apache-2.0) AND Unicode-3.0",
+      "source": "https://crates.io/crates/unicode-ident/1.0.26",
+      "registryChecksum": "d245f478577f809a851594d02313b640fb437e0bb33866753cff937863096954",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 227418,
+          "size": 9723,
+          "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 237190,
+          "size": 1023,
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        },
+        {
+          "upstreamPath": "LICENSE-UNICODE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 238266,
+          "size": 1995,
+          "sha256": "f7db81051789b729fea528a63ec4c938fdcb93d9d61d97dc8cc2e9df6d47f2a1"
+        }
+      ]
+    },
+    {
+      "name": "walrus",
+      "version": "0.26.4",
+      "role": "build-tool-only",
+      "declaredLicense": "MIT/Apache-2.0",
+      "source": "https://crates.io/crates/walrus/0.26.4",
+      "registryChecksum": "3bfa49767bb3a9e1afb02aa95bbcbde8d82f2db4ca377afae94d688f14f62378",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 240306,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 251195,
+          "size": 1059,
+          "sha256": "77674336af8ded214dc3ae07da631c7dd35cc8205f39298474ba98a889e57272"
+        }
+      ]
+    },
+    {
+      "name": "wasm-bindgen",
+      "version": "0.2.127",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/wasm-bindgen/0.2.127",
+      "registryChecksum": "1b70935747edd64d89de3efa29d73789b806c15798f8e7dca4d8ac356b50ce70",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 252306,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 263202,
+          "size": 1057,
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
+    {
+      "name": "wasm-bindgen-cli-support",
+      "version": "0.2.127",
+      "role": "generated-binding-source",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/wasm-bindgen-cli-support/0.2.127",
+      "registryChecksum": "8d9582933b7fdee22f4ac90145336564dd0bc97c1ccb424e01c53926eb322312",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 264323,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 275231,
+          "size": 1057,
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
+    {
+      "name": "wasm-bindgen-futures",
+      "version": "0.4.77",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/wasm-bindgen-futures/0.4.77",
+      "registryChecksum": "6b7777d5cc23d0e91404e53ce2d5e8ec7acae3026b16233dba62cd3246457950",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 276347,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 287250,
+          "size": 1057,
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
+    {
+      "name": "wasm-bindgen-shared",
+      "version": "0.2.127",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT OR Apache-2.0",
+      "source": "https://crates.io/crates/wasm-bindgen-shared/0.2.127",
+      "registryChecksum": "7ef64dbcc55df09c7e5a46182d181c2cfa3e925f3da937ea764728b4bbb9dcbf",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-APACHE",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 288366,
+          "size": 10847,
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 299269,
+          "size": 1057,
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
+    {
+      "name": "zmij",
+      "version": "1.0.23",
+      "role": "potential-wasm-runtime",
+      "declaredLicense": "MIT",
+      "source": "https://crates.io/crates/zmij/1.0.23",
+      "registryChecksum": "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b",
+      "notices": [
+        {
+          "upstreamPath": "LICENSE-MIT",
+          "bundlePath": "licenses/cargo-runtime-notices.txt",
+          "offset": 300366,
+          "size": 1023,
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        }
+      ]
+    }
+  ],
+  "compilerRuntime": {
+    "name": "Rust standard library",
+    "compilerCommit": "8b6558a02b2774acfb25cf15e199467c37ba7490",
+    "declaredLicense": "MIT OR Apache-2.0, with per-file/dependency exceptions retained in the copyright report",
+    "source": "https://github.com/rust-lang/rust/tree/8b6558a02b2774acfb25cf15e199467c37ba7490/library",
+    "noticePath": "licenses/rust-standard-library.html",
+    "sha256": "7807d12c0c8a196ae3b47ada81ddc92ab2a835d8eb68788c440e656a21de3201",
+    "scope": "Complete compiler-provided standard-library copyright report, broader than the subset linked into this wasm32 build; not the unrelated compiler tool copyright report."
+  },
+  "excludedScopes": [
+    "Optional native/FUSE components are not linked by the wasm32 target; native distributions need their own inventory.",
+    "Proc-macro/build-only dependency closures and npm dev tools are not represented as shipped runtime code.",
+    "wasm-pack is a build orchestrator, not an embedded application component. Its version remains recorded by the build manifest."
+  ],
+  "noticeFiles": [
+    {
+      "path": "licenses/cargo-runtime-notices.txt",
+      "sha256": "125ed25db5ad5684e6297541127145878d9fb7701825f407f0077e12e3749f89",
+      "size": 301391
+    },
+    {
+      "path": "licenses/rust-standard-library.html",
+      "sha256": "7807d12c0c8a196ae3b47ada81ddc92ab2a835d8eb68788c440e656a21de3201",
+      "size": 1435128
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "castalia.filesystem-build-tools.v1",
+  "canonicalRustHost": "aarch64-apple-darwin",
+  "wasmBindgen": {
+    "version": "0.2.127",
+    "source": "https://crates.io/crates/wasm-bindgen-cli/0.2.127",
+    "cargoLock": "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock",
+    "cargoLockSha256": "420a0f944d2521032fbdc6a46d1519b7943ffe8254d019dc37ab8865428fceb9",
+    "installArguments": [
+      "install",
+      "wasm-bindgen-cli",
+      "--version",
+      "0.2.127",
+      "--locked"
+    ],
+    "expectedWalrusProducer": "0.26.4"
+  },
+  "reproducibilityScope": "Exact candidate bytes across independent macOS arm64 builders. Linux native/wasm portability is tested; cross-OS closure symbol identity is not promised."
+}
