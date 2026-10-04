@@ -1,0 +1,26 @@
+{
+  "steps": [
+    {
+      "label": ":crab: Local filesystem native source and fixtures",
+      "key": "native",
+      "command": "bash .buildkite/source-gates.sh native",
+      "agents": { "queue": "linux-medium" },
+      "timeout_in_minutes": 45
+    },
+    {
+      "label": ":globe_with_meridians: Local filesystem WASM golden-fixture parity",
+      "key": "wasm",
+      "command": "bash .buildkite/source-gates.sh wasm",
+      "agents": { "queue": "linux-medium" },
+      "timeout_in_minutes": 60
+    },
+    {
+      "label": ":white_check_mark: Local filesystem source ready",
+      "key": "filesystem-local-source-ready",
+      "depends_on": ["native", "wasm"],
+      "command": "bash .buildkite/source-gates.sh ready",
+      "agents": { "queue": "linux-medium" },
+      "timeout_in_minutes": 5
+    }
+  ]
+}
