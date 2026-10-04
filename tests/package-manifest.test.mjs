@@ -67,7 +67,6 @@ async function fixture(t, patch = {}) {
     "docs/THIRD-PARTY-NOTICES.md",
     "docs/AGPL-DISTRIBUTION.md",
     "provenance/extraction.json",
-    "provenance/local-browser-port.json",
     "provenance/build-tools.json",
     "provenance/wasm-bindgen-cli-0.2.127.Cargo.lock",
   ]) {
@@ -113,7 +112,7 @@ async function fixture(t, patch = {}) {
 test("complete package verifies against independent source and digest", async (t) => {
   const f = await fixture(t);
   const manifest = await verifyPackage(f.directory, f.hash, revision);
-  assert.equal(manifest.files.length, 31);
+  assert.equal(manifest.files.length, 30);
 });
 
 test("changed bytes, missing source pin and wrong digest reject", async (t) => {
