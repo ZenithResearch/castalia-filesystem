@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sourced by run.sh. All installations belong to this disposable job.
+# Sourced by source-gates.sh. All installations belong to this disposable job.
 set -euo pipefail
 
 ci_fetch_verified() {

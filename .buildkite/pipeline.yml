@@ -1,62 +1,26 @@
 {
   "steps": [
     {
-      "label": "Filesystem Linux source and services",
-      "key": "filesystem-linux",
-      "command": "bash .buildkite/scripts/run.sh linux",
-      "agents": { "queue": "linux-small" },
-      "timeout_in_minutes": 45,
-      "artifact_paths": [".buildkite/artifacts/linux/**/*"]
+      "label": ":crab: Filesystem native source and fixtures",
+      "key": "native",
+      "command": "bash .buildkite/source-gates.sh native",
+      "agents": { "queue": "linux-medium" },
+      "timeout_in_minutes": 45
     },
     {
-      "block": "Authorize billed macOS filesystem qualification",
-      "key": "filesystem-authorize-macos",
-      "depends_on": ["filesystem-linux"],
-      "prompt": "Linux checks have finished. Continue only with explicit authorization for three macOS jobs: native checks and two independent WASM package builds. This does not deploy or publish a package.",
-      "fields": [
-        {
-          "text": "Full source commit authorized for macOS execution",
-          "key": "filesystem-macos-approved-commit",
-          "required": true,
-          "hint": "Paste this build's full 40-character commit. Each macOS job verifies it before installing tools or compiling."
-        }
-      ]
+      "label": ":globe_with_meridians: Filesystem WASM golden-fixture parity",
+      "key": "wasm",
+      "command": "bash .buildkite/source-gates.sh wasm",
+      "agents": { "queue": "linux-medium" },
+      "timeout_in_minutes": 60
     },
     {
-      "label": "Filesystem macOS native parity",
-      "key": "filesystem-mac-native",
-      "depends_on": ["filesystem-authorize-macos"],
-      "command": "bash .buildkite/scripts/run.sh mac-native",
-      "agents": { "queue": "macos-15-medium" },
-      "timeout_in_minutes": 30,
-      "artifact_paths": [".buildkite/artifacts/mac-native/**/*"]
-    },
-    {
-      "label": "Filesystem WASM replica one",
-      "key": "filesystem-candidate-one",
-      "depends_on": ["filesystem-authorize-macos"],
-      "command": "bash .buildkite/scripts/run.sh candidate-one",
-      "agents": { "queue": "macos-15-medium" },
-      "timeout_in_minutes": 60,
-      "artifact_paths": [".buildkite/artifacts/candidate-one/**/*"]
-    },
-    {
-      "label": "Filesystem WASM replica two",
-      "key": "filesystem-candidate-two",
-      "depends_on": ["filesystem-authorize-macos"],
-      "command": "bash .buildkite/scripts/run.sh candidate-two",
-      "agents": { "queue": "macos-15-medium" },
-      "timeout_in_minutes": 60,
-      "artifact_paths": [".buildkite/artifacts/candidate-two/**/*"]
-    },
-    {
-      "label": "Filesystem complete qualification and byte equality",
-      "key": "filesystem-qualified",
-      "depends_on": ["filesystem-linux", "filesystem-mac-native", "filesystem-candidate-one", "filesystem-candidate-two"],
-      "command": "bash .buildkite/scripts/run.sh compare",
-      "agents": { "queue": "linux-small" },
-      "timeout_in_minutes": 10,
-      "artifact_paths": [".buildkite/artifacts/compare/**/*"]
+      "label": ":white_check_mark: Public source ready",
+      "key": "filesystem-source-ready",
+      "depends_on": ["native", "wasm"],
+      "command": "bash .buildkite/source-gates.sh ready",
+      "agents": { "queue": "linux-medium" },
+      "timeout_in_minutes": 5
     }
   ]
 }
