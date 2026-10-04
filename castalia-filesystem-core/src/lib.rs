@@ -3,7 +3,10 @@
 //! See docs/FILESYSTEM-SNAPSHOT-V1.md for the exact wire and security boundary.
 
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeSet;
+use std::{
+    cell::RefCell,
+    collections::{BTreeMap, BTreeSet},
+};
 
 pub mod builder;
 #[cfg(all(feature = "fuse", unix, not(target_arch = "wasm32")))]
@@ -307,6 +310,107 @@ pub trait ObjectWriter {
     async fn put(&self, bytes: &[u8]) -> Result<ContentId, Error>;
 }
 
+/// Scan all retained roots with shared verification and global work budgets.
+/// The caller must treat any error as a refusal to reclaim storage.
+pub async fn reachable_ids_for_roots_bounded<R: ObjectReader>(
+    reader: &R,
+    roots: &[ContentId],
+    max_objects: usize,
+    max_bytes: u64,
+    max_visits: usize,
+    max_read_bytes: u64,
+) -> Result<Vec<ContentId>, Error> {
+    if roots.len() > 1024 || max_objects == 0 || max_visits == 0 {
+        return Err(Error::Limit);
+    }
+    let cached = BudgetedReader {
+        inner: reader,
+        state: RefCell::new(ReadBudgetState {
+            bytes: BTreeMap::new(),
+            visits: 0,
+            read_bytes: 0,
+        }),
+        max_visits,
+        max_read_bytes,
+    };
+    let mut ids = BTreeSet::new();
+    let mut total_bytes = 0u64;
+    for root in roots {
+        let view = SnapshotView::open(&cached, *root).await?;
+        for id in view.reachable_ids_bounded(max_objects, max_bytes).await? {
+            if ids.insert(id) {
+                if ids.len() > max_objects {
+                    return Err(Error::Limit);
+                }
+                let size = cached
+                    .state
+                    .borrow()
+                    .bytes
+                    .get(&id)
+                    .map(Vec::len)
+                    .ok_or(Error::Integrity)?;
+                total_bytes = total_bytes.checked_add(size as u64).ok_or(Error::Limit)?;
+                if total_bytes > max_bytes {
+                    return Err(Error::Limit);
+                }
+            }
+        }
+    }
+    Ok(ids.into_iter().collect())
+}
+
+struct ReadBudgetState {
+    bytes: BTreeMap<ContentId, Vec<u8>>,
+    visits: usize,
+    read_bytes: u64,
+}
+
+struct BudgetedReader<'a, R> {
+    inner: &'a R,
+    state: RefCell<ReadBudgetState>,
+    max_visits: usize,
+    max_read_bytes: u64,
+}
+
+impl<R: ObjectReader> ObjectReader for BudgetedReader<'_, R> {
+    async fn get(&self, id: ContentId, max_bytes: usize) -> Result<Vec<u8>, Error> {
+        {
+            let mut state = self.state.borrow_mut();
+            state.visits = state.visits.checked_add(1).ok_or(Error::Limit)?;
+            if state.visits > self.max_visits {
+                return Err(Error::Limit);
+            }
+            if let Some(bytes) = state.bytes.get(&id) {
+                if bytes.len() > max_bytes {
+                    return Err(Error::Limit);
+                }
+                return Ok(bytes.clone());
+            }
+        }
+        let remaining = self
+            .max_read_bytes
+            .saturating_sub(self.state.borrow().read_bytes);
+        if remaining == 0 {
+            return Err(Error::Limit);
+        }
+        let cap = max_bytes.min(usize::try_from(remaining).unwrap_or(usize::MAX));
+        let bytes = self.inner.get(id, cap).await?;
+        if bytes.len() > cap || ContentId::for_bytes(&bytes) != id {
+            return Err(Error::Integrity);
+        }
+        let mut state = self.state.borrow_mut();
+        state.read_bytes = state
+            .read_bytes
+            .checked_add(bytes.len() as u64)
+            .ok_or(Error::Limit)?;
+        if state.read_bytes > self.max_read_bytes {
+            return Err(Error::Limit);
+        }
+        state.bytes.insert(id, bytes.clone());
+        Ok(bytes)
+    }
+}
+
 /// Root-pinned reader. No mutable-head following or implicit generation changes.
 pub struct SnapshotView<'a, R> {
     reader: &'a R,
@@ -464,6 +568,7 @@ impl<'a, R: ObjectReader> SnapshotView<'a, R> {
     ) -> Result<Vec<ContentId>, Error> {
         self.validate_tree_stats().await?;
         let mut seen = BTreeSet::new();
+        let mut verified_chunks = BTreeMap::new();
         let mut total_bytes = 0u64;
         let mut add = |id: ContentId, size: usize| -> Result<(), Error> {
             if seen.insert(id) {
@@ -490,12 +595,19 @@ impl<'a, R: ObjectReader> SnapshotView<'a, R> {
                 }
                 Node::File(file) => {
                     for chunk in file.chunks {
+                        if let Some(size) = verified_chunks.get(&chunk.content) {
+                            if *size != chunk.size {
+                                return Err(Error::Integrity);
+                            }
+                            continue;
+                        }
                         let bytes = self.reader.get(chunk.content, chunk.size as usize).await?;
                         if bytes.len() != chunk.size as usize
                             || ContentId::for_bytes(&bytes) != chunk.content
                         {
                             return Err(Error::Integrity);
                         }
+                        verified_chunks.insert(chunk.content, chunk.size);
                         add(chunk.content, bytes.len())?;
                     }
                 }

@@ -110,6 +110,22 @@ const revisedManifest = JSON.parse(new TextDecoder().decode(objects.get(revision
 assert.equal(revisedManifest.node.body.previous, snapshotId);
 assert.equal(revisedManifest.node.body.generation, 1);
 assert.equal(JSON.parse(await reader.stat(revisionId, "/hello.txt")).body.inode, 2);
+const directoryRevision = new wasm.BrowserDirectoryRevision(revisionId, "/drafts", 2n, getObject, putObject);
+const createdDirectoryId = await directoryRevision.finish();
+assert.deepEqual(JSON.parse(await reader.list(createdDirectoryId, "/drafts")), []);
+assert.equal(JSON.parse(await reader.stat(createdDirectoryId, "/drafts")).body.modified_ms, 2);
+assert.equal(JSON.parse(await reader.list(revisionId, "/")).length, 1);
+const newFile = new wasm.BrowserFileRevision(createdDirectoryId, "/drafts/new.md", 3n, false, getObject, putObject);
+await newFile.append_chunk(bytes("written in browser\n"));
+const createdId = await newFile.finish_new();
+assert.deepEqual(
+  await reader.read_range(createdId, "/drafts/new.md", 0n, 64),
+  bytes("written in browser\n"),
+);
+const collision = new wasm.BrowserFileRevision(createdId, "/drafts/new.md", 4n, false, getObject, putObject);
+await assert.rejects(collision.finish_new(), /entry exists/);
+const duplicateFolder = new wasm.BrowserDirectoryRevision(createdId, "/drafts", 4n, getObject, putObject);
+await assert.rejects(duplicateFolder.finish(), /entry exists/);
 const missingReader = new wasm.PinnedSnapshotReader(async () => {
   throw Object.assign(new Error("missing"), { code: "missing-object" });
 });
@@ -122,4 +138,4 @@ await assert.rejects(quotaBuilder.append_chunk(bytes("blocked")), /quota/);
 objects.set(chunkId, bytes("tampered content\n"));
 await assert.rejects(reader.read_range(snapshotId, "/hello.txt", 0n, chunk.length));
 await assert.rejects(reader.reachable_ids_bounded(snapshotId, 16, 1024n * 1024n));
-console.log("filesystem WASM parity: canonical manifest, pinned reads, revision, bounds, tamper rejection passed");
+console.log("filesystem WASM parity: canonical manifest, pinned reads, file/folder revisions, bounds, tamper rejection passed");

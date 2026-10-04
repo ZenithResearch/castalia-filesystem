@@ -23,7 +23,7 @@ async function fixture(t, patch = {}) {
   await writeFile(join(directory,"provenance/build-tools.json"),"synthetic tool provenance");
   await writeFile(join(directory,"provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"),"synthetic tool lock");
   await mkdir(join(directory,"docs"));
-  for(const path of ["docs/SOURCE-PROVENANCE.md","docs/THIRD-PARTY-NOTICES.md","docs/AGPL-DISTRIBUTION.md","provenance/extraction.json"])await writeFile(join(directory,path),"synthetic provenance");
+  for(const path of ["docs/SOURCE-PROVENANCE.md","docs/THIRD-PARTY-NOTICES.md","docs/AGPL-DISTRIBUTION.md","provenance/extraction.json","provenance/local-browser-port.json"])await writeFile(join(directory,path),"synthetic provenance");
   await noticeFixture(directory,{"castalia-filesystem-wasm/Cargo.lock":"c".repeat(64),"provenance/wasm-bindgen-cli-0.2.127.Cargo.lock":digest("synthetic tool lock")});
   const manifest = {
     schema: SCHEMA,
@@ -42,7 +42,7 @@ async function fixture(t, patch = {}) {
 test("complete package verifies against independent source and digest", async (t) => {
   const f = await fixture(t);
   const manifest = await verifyPackage(f.directory, f.hash, revision);
-  assert.equal(manifest.files.length, 19);
+  assert.equal(manifest.files.length, 20);
 });
 
 test("changed bytes, missing source pin and wrong digest reject", async (t) => {
