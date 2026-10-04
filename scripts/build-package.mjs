@@ -90,7 +90,7 @@ await copyFile(join(root, "docs/SNAPSHOT-V1.md"), join(output, "SNAPSHOT-V1.md")
 await mkdir(join(output,"provenance"));
 await mkdir(join(output,"docs"));
 await cp(join(root,"licenses"),join(output,"licenses"),{recursive:true,dereference:false});
-for(const path of ["docs/SOURCE-PROVENANCE.md","docs/THIRD-PARTY-NOTICES.md","docs/AGPL-DISTRIBUTION.md","provenance/notices.json","provenance/extraction.json"])await copyFile(join(root,path),join(output,path));
+for(const path of ["docs/SOURCE-PROVENANCE.md","docs/THIRD-PARTY-NOTICES.md","docs/AGPL-DISTRIBUTION.md","provenance/notices.json","provenance/extraction.json","provenance/local-browser-port.json"])await copyFile(join(root,path),join(output,path));
 for(const path of ["provenance/build-tools.json","provenance/wasm-bindgen-cli-0.2.127.Cargo.lock"])await copyFile(join(root,path),join(output,path));
 for (const [path, expected] of Object.entries(locks)) {
   if (digest(await readFile(join(root, path))) !== expected) throw new Error(`lock changed during build: ${path}`);

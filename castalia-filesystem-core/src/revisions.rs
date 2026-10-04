@@ -21,6 +21,27 @@ pub async fn revise_file<S: ObjectReader + ObjectWriter>(
     path: &str,
     staged: StagedFile,
 ) -> Result<ContentId, Error> {
+    revise_file_inner(store, base, path, staged, true).await
+}
+
+/// Create a file only when the leaf path is absent. Existing files and
+/// directories are never replaced by this operation.
+pub async fn create_file<S: ObjectReader + ObjectWriter>(
+    store: &S,
+    base: ContentId,
+    path: &str,
+    staged: StagedFile,
+) -> Result<ContentId, Error> {
+    revise_file_inner(store, base, path, staged, false).await
+}
+
+async fn revise_file_inner<S: ObjectReader + ObjectWriter>(
+    store: &S,
+    base: ContentId,
+    path: &str,
+    staged: StagedFile,
+    replace_existing: bool,
+) -> Result<ContentId, Error> {
     integer(staged.modified_ms)?;
     let parts = path_components(path)?;
     if parts.is_empty() {
@@ -51,6 +72,7 @@ pub async fn revise_file<S: ObjectReader + ObjectWriter>(
     let leaf = parts.last().expect("nonempty path");
     let existing = parent.entries.iter().position(|entry| entry.name == *leaf);
     let logical = match existing {
+        Some(_) if !replace_existing => return Err(Error::Invalid("entry exists")),
         Some(index) if parent.entries[index].node.kind == NodeKind::File => {
             parent.entries[index].node.inode
         }
@@ -113,19 +135,94 @@ pub async fn revise_file<S: ObjectReader + ObjectWriter>(
         entry.node = changed;
         changed = write_directory(store, directory).await?;
     }
-    let generation = view
-        .snapshot()
-        .generation
-        .checked_add(1)
-        .ok_or(Error::Limit)?;
+    write_revision_snapshot(store, base, view.snapshot(), changed).await
+}
+
+/// Add an empty directory within an existing directory. Unchanged nodes keep
+/// their content IDs and logical inodes; the new directory gets a fresh inode.
+pub async fn create_directory<S: ObjectReader + ObjectWriter>(
+    store: &S,
+    base: ContentId,
+    path: &str,
+    modified_ms: u64,
+) -> Result<ContentId, Error> {
+    integer(modified_ms)?;
+    let parts = path_components(path)?;
+    if parts.is_empty() {
+        return Err(Error::Invalid("directory root"));
+    }
+    let view = SnapshotView::open(store, base).await?;
+    let max_inode = view.validate_tree_stats().await?.max_inode;
+    let logical = max_inode.checked_add(1).ok_or(Error::Limit)?;
+    inode(logical)?;
+
+    let mut ancestry = Vec::new();
+    let mut current = view.snapshot().root.clone();
+    for component in &parts[..parts.len() - 1] {
+        let Node::Directory(directory) = checked_node(store, &current).await? else {
+            return Err(Error::NotDirectory);
+        };
+        let child = directory
+            .entries
+            .iter()
+            .find(|entry| entry.name == *component)
+            .ok_or(Error::NotFound)?
+            .node
+            .clone();
+        ancestry.push((directory, (*component).to_owned()));
+        current = child;
+    }
+    let Node::Directory(mut parent) = checked_node(store, &current).await? else {
+        return Err(Error::NotDirectory);
+    };
+    let leaf = parts.last().expect("nonempty path");
+    if parent.entries.iter().any(|entry| entry.name == *leaf) {
+        return Err(Error::Invalid("entry exists"));
+    }
+    if parent.entries.len() >= MAX_ENTRIES {
+        return Err(Error::Limit);
+    }
+    let child = write_directory(
+        store,
+        Directory {
+            inode: logical,
+            modified_ms,
+            entries: Vec::new(),
+        },
+    )
+    .await?;
+    parent.entries.push(Entry {
+        name: (*leaf).into(),
+        node: child,
+    });
+    let mut changed = write_directory(store, parent).await?;
+    for (mut directory, component) in ancestry.into_iter().rev() {
+        let entry = directory
+            .entries
+            .iter_mut()
+            .find(|entry| entry.name == component)
+            .ok_or(Error::NotFound)?;
+        entry.node = changed;
+        changed = write_directory(store, directory).await?;
+    }
+    write_revision_snapshot(store, base, view.snapshot(), changed).await
+}
+
+async fn write_revision_snapshot<S: ObjectWriter>(
+    store: &S,
+    base: ContentId,
+    previous: &Snapshot,
+    root: NodeRef,
+) -> Result<ContentId, Error> {
+    let generation = previous.generation.checked_add(1).ok_or(Error::Limit)?;
     integer(generation)?;
     put_checked(
         store,
         &Manifest::new(Node::Snapshot(Snapshot {
-            namespace: view.snapshot().namespace,
+            namespace: previous.namespace,
             generation,
             previous: Some(base),
-            root: changed,
+            root,
         }))
         .encode()?,
     )

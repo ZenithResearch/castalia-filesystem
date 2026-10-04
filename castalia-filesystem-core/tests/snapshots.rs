@@ -108,6 +108,65 @@ fn reachable_ids_include_payloads_and_fail_closed() {
 }
 
 #[test]
+fn retained_roots_share_verified_reads_and_obey_global_budgets() {
+    let (mut store, first) = fixture();
+    let root = {
+        let first_view = block_on(SnapshotView::open(&store, first)).unwrap();
+        first_view.snapshot().root.clone()
+    };
+    let second = store.snapshot(root, Some(first));
+    let expected: Vec<_> = store.objects.keys().copied().collect();
+    block_on(async {
+        assert_eq!(
+            reachable_ids_for_roots_bounded(
+                &store,
+                &[first, second],
+                32,
+                1024 * 1024,
+                128,
+                1024 * 1024,
+            )
+            .await
+            .unwrap(),
+            expected
+        );
+        assert_eq!(
+            reachable_ids_for_roots_bounded(
+                &store,
+                &[first, second],
+                32,
+                1024 * 1024,
+                1,
+                1024 * 1024
+            )
+            .await,
+            Err(Error::Limit)
+        );
+        assert_eq!(
+            reachable_ids_for_roots_bounded(&store, &[first, second], 32, 1024 * 1024, 128, 1)
+                .await,
+            Err(Error::Limit)
+        );
+    });
+    let requests = store.requests.borrow();
+    let shared = ContentId::for_bytes(b"abc");
+    assert_eq!(requests.iter().filter(|(id, _)| *id == shared).count(), 1);
+    drop(requests);
+    store.objects.remove(&shared);
+    assert_eq!(
+        block_on(reachable_ids_for_roots_bounded(
+            &store,
+            &[first, second],
+            32,
+            1024 * 1024,
+            128,
+            1024 * 1024,
+        )),
+        Err(Error::Unavailable)
+    );
+}
+
+#[test]
 fn golden_directory_encoder_and_decoder_agree() {
     let bytes = include_str!("../fixtures/empty-directory-v1.json")
         .trim_end()

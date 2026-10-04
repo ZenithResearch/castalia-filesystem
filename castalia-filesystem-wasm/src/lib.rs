@@ -8,7 +8,8 @@ mod browser {
         Chunk, ContentId, Error, MAX_CHUNK_BYTES, MAX_CHUNKS, Manifest, ObjectReader, ObjectWriter,
         SnapshotView,
         builder::SnapshotBuilder,
-        revisions::{StagedFile, revise_file},
+        reachable_ids_for_roots_bounded,
+        revisions::{StagedFile, create_directory, create_file, revise_file},
     };
     use js_sys::{Function, Promise, Reflect, Uint8Array};
     use wasm_bindgen::{JsCast, JsValue, prelude::wasm_bindgen};
@@ -140,6 +141,18 @@ mod browser {
         finished: bool,
     }
 
+    /// Copy-on-write empty directory addition. The host selects the returned
+    /// root only after an expected-head comparison in its own catalog.
+    #[wasm_bindgen]
+    pub struct BrowserDirectoryRevision {
+        base: String,
+        path: String,
+        modified_ms: u64,
+        get_object: Function,
+        put_object: Function,
+        finished: bool,
+    }
+
     struct CallbackStore<'a> {
         get: &'a Function,
         put: &'a Function,
@@ -154,6 +167,31 @@ mod browser {
     impl ObjectWriter for CallbackStore<'_> {
         async fn put(&self, bytes: &[u8]) -> Result<ContentId, Error> {
             CallbackWriter(self.put).put(bytes).await
+        }
+    }
+
+    impl BrowserFileRevision {
+        async fn finish_revision(&mut self, create_only: bool) -> Result<String, JsValue> {
+            if self.finished {
+                return Err(js_error(Error::Invalid("revision finished")));
+            }
+            self.finished = true;
+            let staged = StagedFile {
+                modified_ms: self.modified_ms,
+                executable: self.executable,
+                chunks: std::mem::take(&mut self.chunks),
+            };
+            let store = CallbackStore {
+                get: &self.get_object,
+                put: &self.put_object,
+            };
+            let base = parse_id(self.base.clone())?;
+            let id = if create_only {
+                create_file(&store, base, &self.path, staged).await
+            } else {
+                revise_file(&store, base, &self.path, staged).await
+            };
+            id.map(String::from).map_err(js_error)
         }
     }
 
@@ -206,23 +244,49 @@ mod browser {
         }
 
         pub async fn finish(&mut self) -> Result<String, JsValue> {
+            self.finish_revision(false).await
+        }
+
+        /// Create-only file addition. Refuses any existing leaf entry.
+        pub async fn finish_new(&mut self) -> Result<String, JsValue> {
+            self.finish_revision(true).await
+        }
+    }
+
+    #[wasm_bindgen]
+    impl BrowserDirectoryRevision {
+        #[wasm_bindgen(constructor)]
+        pub fn new(
+            base: String,
+            path: String,
+            modified_ms: u64,
+            get_object: Function,
+            put_object: Function,
+        ) -> Result<Self, JsValue> {
+            parse_id(base.clone())?;
+            Ok(Self {
+                base,
+                path,
+                modified_ms,
+                get_object,
+                put_object,
+                finished: false,
+            })
+        }
+
+        pub async fn finish(&mut self) -> Result<String, JsValue> {
             if self.finished {
                 return Err(js_error(Error::Invalid("revision finished")));
             }
             self.finished = true;
-            let staged = StagedFile {
-                modified_ms: self.modified_ms,
-                executable: self.executable,
-                chunks: std::mem::take(&mut self.chunks),
-            };
-            revise_file(
+            create_directory(
                 &CallbackStore {
                     get: &self.get_object,
                     put: &self.put_object,
                 },
                 parse_id(self.base.clone())?,
                 &self.path,
-                staged,
+                self.modified_ms,
             )
             .await
             .map(String::from)
@@ -347,6 +411,40 @@ mod browser {
                 .reachable_ids_bounded(max_objects, max_bytes)
                 .await
                 .map_err(js_error)?;
+            let ids: Vec<String> = ids.into_iter().map(String::from).collect();
+            serde_json::to_string(&ids).map_err(|error| JsValue::from_str(&error.to_string()))
+        }
+
+        /// Verify every retained root in one memoized scan with global visit
+        /// and physical-read budgets. Errors never authorize deletion.
+        pub async fn reachable_ids_for_roots_bounded(
+            &self,
+            roots_json: String,
+            max_objects: usize,
+            max_bytes: u64,
+            max_visits: usize,
+            max_read_bytes: u64,
+        ) -> Result<String, JsValue> {
+            let roots: Vec<String> =
+                serde_json::from_str(&roots_json).map_err(|_| js_error(Error::Invalid("roots")))?;
+            if roots.len() > 1024 {
+                return Err(js_error(Error::Limit));
+            }
+            let roots = roots
+                .into_iter()
+                .map(parse_id)
+                .collect::<Result<Vec<_>, _>>()?;
+            let reader = CallbackReader(&self.get_object);
+            let ids = reachable_ids_for_roots_bounded(
+                &reader,
+                &roots,
+                max_objects,
+                max_bytes,
+                max_visits,
+                max_read_bytes,
+            )
+            .await
+            .map_err(js_error)?;
             let ids: Vec<String> = ids.into_iter().map(String::from).collect();
             serde_json::to_string(&ids).map_err(|error| JsValue::from_str(&error.to_string()))
         }
