@@ -30,3 +30,7 @@ Preserve unavailable database errors through the worker boundary, make registrat
 - Add separate private index/gateway services and reproducible operator packaging.
 - Add immutable encrypted shipping, fresh retrieval verification, durable resume and scoped source retention.
 - Add explicit recovery import with expected-head checks; retain source permission and real-host qualification blockers.
+
+## Provider-neutral registration review
+
+- Add the capability-detected registration v2 provider type over unchanged manifest bytes and test independent receiver issuer/controller policy with two unrelated issuers.
