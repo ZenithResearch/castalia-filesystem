@@ -131,3 +131,11 @@ export function verifyEd25519(
   signature: string,
   bytes: Uint8Array,
 ): Promise<void>;
+
+/** Capability-detected additive transport; signatures are proposals, not receiver acceptance. */
+export interface RegistrationProviderV2 {
+  getCapabilities(): Promise<readonly string[]>;
+  requestRegistrationV2(
+    request: RegistrationRequestV1,
+  ): Promise<SignedRegistrationManifestV1>;
+}

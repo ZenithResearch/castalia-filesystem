@@ -1,0 +1,9 @@
+# Provider trust and receiver eligibility
+
+Filesystem registration accepts existing signed manifests. Wallet's `registration_proposal_v2` capability / `requestRegistrationV2` API changes the consent transport, not canonical manifest bytes or acceptance rules. Consumers select a compatible provider by capabilities and methods, never by wallet brand or provider display name. No fallback to an older signing entry point is implicit.
+
+The wallet approves signing; the Files receiving service independently verifies base-v3 membership against its operator-configured roots for genesis, and the accepted controller/revision chain for updates. A profile trusted by Wallet is not automatically trusted by the index. A v4 community proof cannot satisfy base eligibility. A supplied issuer label cannot authorize its key. `services/tests/provider-neutrality.test.mjs` exercises two unrelated synthetic issuers against the existing index and tests untrusted issuer, community-only, wrong-holder, controller and stale-head rejection.
+
+Consumers must explicitly select a membership profile, then verify its credential against their own receiver policy. A local catalog, approved profile, namespace placement or connection consent does not grant operation or read authority. Historical protocol names and canonical ontology URIs remain unchanged; Zenith is a legitimate configured issuer, never a universal Wallet dependency.
+
+Provenance: this additive interface and receiver regression test build on the reviewed registration/index implementation at 7baff3f. Shared provider-profile contract: bananawalnut/castalia-wallet-auth commit 066ce4ed0cc4e7e698dc41dda62e731f83aa6c87, PR #3. No private runtime code or new data/recovery format is included. Existing license and source-permission records remain separate from technical acceptance.
